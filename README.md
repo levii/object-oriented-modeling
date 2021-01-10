@@ -1,1 +1,1 @@
-# object-oriented-modeling
+# オブジェクト指向モデリング勉強会 - サンプルコード
