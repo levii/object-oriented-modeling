@@ -1,23 +1,32 @@
 class Plate {
+    public readonly name: string;
     // 1つの Plate は、複数個の Dish を持つ
     public readonly dishes: Dish[];
 
-    constructor(dishes: Dish[]) {
+    constructor(name: string, dishes: Dish[]) {
+        this.name = name;
         this.dishes = dishes;
+    }
+
+    toString(): string {
+        const dishes = this.dishes.map((dish) => ` - ${dish.toString()}`);
+        return `Plate ${this.name}\n${dishes.join('\n')}`;
     }
 }
 
 class Dish {
+    public readonly name: string;
     public readonly price: Price;
     public readonly nutrition: Nutrition;
 
-    constructor(price: Price, nutrition: Nutrition) {
+    constructor(name: string, price: Price, nutrition: Nutrition) {
+        this.name = name;
         this.price = price;
         this.nutrition = nutrition;
     }
 
     toString(): string {
-        return `Dish(${this.nutrition}, ${this.price})`;
+        return `Dish(${this.name}, ${this.nutrition}, ${this.price})`;
     }
 }
 
