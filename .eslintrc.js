@@ -30,7 +30,7 @@ module.exports = {
       "warn",
       {
         bracketSpacing: true,
-        printWidth: 120,
+        printWidth: 80,
         singleQuote: true,
         tabWidth: 4,
         trailingComma: "es5", // EcmaScript5 において、validな場合には末尾カンマを許可する
