@@ -17,6 +17,23 @@ class Plate {
         // TODO: Dish の値段を合計したものを返す
         return new Price(0);
     }
+
+    findLowestPriceGreenDish(): Dish | undefined {
+        // 緑を含む料理を探す
+        const greenDishes = [];
+        this.dishes.forEach((dish) => {
+            if (dish.nutrition.green > 0) {
+                greenDishes.push(dish);
+            }
+        });
+
+        // 値段の安い順に並び替えて
+        const sortedGreenDishes = greenDishes.sort(
+            (a, b) => a.price.value - b.price.value
+        );
+        // 最初の要素を返す
+        return sortedGreenDishes[0];
+    }
 }
 
 class Dish {
@@ -158,39 +175,69 @@ interface IDiscount {
 
 class NutritionBalanceDiscount implements IDiscount {
     private readonly plate: Plate;
+
     public constructor(plate: Plate) {
         this.plate = plate;
     }
-    // 条件: 赤の合計が 3点以上のとき
+
+    // 条件: 赤と緑の合計が 3点以上のとき
     public available(): boolean {
         return false; // ここは一旦モックで実装
     }
+
     // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
     public calcDiscount(): DiscountAmount {
-        if (this.available()) {
-            // 緑を含む料理を探す
-            const greenDishes = [] as Dish[];
-            this.plate.dishes.forEach((dish) => {
-                if (dish.nutrition.green > 0) {
-                    greenDishes.push(dish);
-                }
-            });
-            // その中で一番安い料理を探す
-            let lowestPriceDish: Dish | null = null;
-            greenDishes.forEach((dish) => {
-                if (!lowestPriceDish) {
-                    lowestPriceDish = dish;
-                }
+        if (!this.available()) {
+            // 適用条件を満たさないときは 0円割引として返す
+            return new DiscountAmount(0);
+        }
 
-                if (lowestPriceDish.price.value > dish.price.value) {
-                    lowestPriceDish = dish;
-                }
-            });
+        // 緑を含む料理を探す
+        const greenDishes = [] as Dish[];
+        this.plate.dishes.forEach((dish) => {
+            if (dish.nutrition.green > 0) {
+                greenDishes.push(dish);
+            }
+        });
+
+        // 値段の安い順に並び替えて
+        const sortedGreenDishes = greenDishes.sort(
+            (a, b) => a.price.value - b.price.value
+        );
+        // 先頭の要素(=一番安い料理)を取り出す
+        const lowestPriceDish = sortedGreenDishes[0];
+        if (lowestPriceDish) {
             // その料理の 20% が割引金額
             return new DiscountAmount(lowestPriceDish.price.value * 0.2);
+        } else {
+            return new DiscountAmount(0);
         }
-        // 適用条件を満たさないときは 0円割引として返す
-        return new DiscountAmount(0);
+    }
+}
+
+class NutritionBalanceDiscount2 implements IDiscount {
+    private readonly plate: Plate;
+    public constructor(plate: Plate) {
+        this.plate = plate;
+    }
+
+    // 条件: 赤と緑の合計が 3点以上のとき
+    public available(): boolean {
+        return false; // TODO: 実装する
+    }
+
+    // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
+    public calcDiscount(): DiscountAmount {
+        if (!this.available()) {
+            return new DiscountAmount(0);
+        }
+
+        const targetDish = this.plate.findLowestPriceGreenDish();
+        if (targetDish) {
+            return new DiscountAmount(targetDish.price.value * 0.2);
+        } else {
+            return new DiscountAmount(0);
+        }
     }
 }
 
