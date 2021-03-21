@@ -36,6 +36,32 @@ class Plate {
     }
 }
 
+class Plate2 {
+    public readonly name: string;
+    public readonly dishes: DishCollection;
+
+    constructor(name: string, dishes: Dish[]) {
+        this.name = name;
+        this.dishes = new DishCollection(dishes);
+    }
+
+    toString(): string {
+        const dishes = this.dishes.map((dish) => ` - ${dish.toString()}`);
+        return `Plate ${this.name}\n${dishes.join('\n')}`;
+    }
+
+    totalAmount(): Price {
+        // TODO: Dish の値段を合計したものを返す
+        return new Price(0);
+    }
+
+    findLowestPriceGreenDish(): Dish | undefined {
+        // 緑を含む料理を探す
+        const greenDishes = this.dishes.greenDishes().orderByPrice();
+        return greenDishes.first();
+    }
+}
+
 class Dish {
     public readonly name: string;
     public readonly price: Price;
@@ -85,6 +111,14 @@ class DishCollection {
     private readonly dishes: Dish[];
     constructor(dishes: Dish[]) {
         this.dishes = dishes;
+    }
+
+    map<T>(fn: (value: Dish, index: number) => T): T[] {
+        return this.dishes.map(fn);
+    }
+
+    first(): Dish | undefined {
+        return this.dishes[0];
     }
 
     greenDishes(): DishCollection {
