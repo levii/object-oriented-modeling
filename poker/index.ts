@@ -43,6 +43,10 @@ class Card {
         return this.suit.isEqual(other.suit) && this.rank.isEqual(other.rank);
     }
 
+    isSameRank(other: Card): boolean {
+        return this.rank.isEqual(other.rank);
+    }
+
     compareByStrength(other: Card): number {
         const compareRank = this.rank.compareByStrength(other.rank);
 
@@ -158,7 +162,7 @@ class Pair {
     private readonly cards: [Card, Card];
 
     constructor(cardA: Card, cardB: Card) {
-        if (cardA.rank.isEqual(cardB.rank)) {
+        if (cardA.isSameRank(cardB)) {
             this.cards = [cardA, cardB];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
@@ -182,7 +186,7 @@ class Triple {
     private readonly cards: [Card, Card, Card];
 
     constructor(cardA: Card, cardB: Card, cardC: Card) {
-        if (cardA.rank.isEqual(cardB.rank) && cardB.rank.isEqual(cardC.rank)) {
+        if (cardA.isSameRank(cardB) && cardB.isSameRank(cardC)) {
             this.cards = [cardA, cardB, cardC];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}, ${cardC}`);
