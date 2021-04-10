@@ -313,6 +313,10 @@ class FullHousePokerHand implements IPokerHand {
     toString(): string {
         return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
     }
+
+    compareWithFullHouse(other: FullHousePokerHand): number {
+        return this.triple.compareByStrength(other.triple);
+    }
 }
 
 class PokerHandCollection {

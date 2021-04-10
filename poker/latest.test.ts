@@ -376,5 +376,30 @@ describe('PokerHand', () => {
                 }).toThrow('Invalid pair and triple');
             });
         });
+
+        describe('compareWithFullHouse', () => {
+            const diamond5 = new Card(Suit.Diamond, new Rank(5));
+            const club5 = new Card(Suit.Club, new Rank(5));
+            const spade5 = new Card(Suit.Spade, new Rank(5));
+            const diamond4 = new Card(Suit.Diamond, new Rank(4));
+            const club4 = new Card(Suit.Club, new Rank(4));
+
+            const fullHouseA = new FullHousePokerHand(
+                new Pair(diamond1, club1),
+                new Triple(diamond3, club3, spade3)
+            );
+            const fullHouseB = new FullHousePokerHand(
+                new Pair(diamond4, club4),
+                new Triple(diamond5, club5, spade5)
+            );
+
+            it('役の強い順に並ぶこと', () => {
+                expect(
+                    [fullHouseA, fullHouseB].sort((a, b) =>
+                        a.compareWithFullHouse(b)
+                    )
+                ).toEqual([fullHouseB, fullHouseA]);
+            });
+        });
     });
 });
