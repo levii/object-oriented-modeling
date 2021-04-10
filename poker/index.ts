@@ -2,6 +2,11 @@ class Hand {
     public readonly cards: Card[];
 
     constructor(cards: Card[]) {
+        if (cards.length != 5) {
+            throw new Error(
+                `Invalid the number of cards: expected 5 cards, but got ${cards.length} cards`
+            );
+        }
         this.cards = cards;
     }
 
@@ -23,10 +28,14 @@ class Card {
     toString(): string {
         return `[${this.suit}${this.rank}]`;
     }
+
+    isEqual(other: Card): boolean {
+        return this.suit.isEqual(other.suit) && this.rank.isEqual(other.rank);
+    }
 }
 
 class Rank {
-    public readonly value: number;
+    private readonly value: number;
 
     constructor(value: number) {
         this.value = value;
@@ -46,10 +55,14 @@ class Rank {
                 return `${this.value}`;
         }
     }
+
+    isEqual(other: Rank): boolean {
+        return this.toString() === other.toString();
+    }
 }
 
 class Suit {
-    public readonly value: string;
+    private readonly value: string;
 
     private mapping = {
         Spade: '♠',
@@ -64,6 +77,10 @@ class Suit {
 
     toString(): string {
         return this.mapping[this.value];
+    }
+
+    isEqual(other: Suit): boolean {
+        return this.toString() === other.toString();
     }
 
     public static Spade = new Suit('Spade');
