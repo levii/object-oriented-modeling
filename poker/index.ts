@@ -254,6 +254,7 @@ class PokerHandName {
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IPokerHand {
     name: PokerHandName;
+    compareByStrength(other: IPokerHand): number;
 }
 
 class OnePairPokerHand implements IPokerHand {
@@ -266,6 +267,14 @@ class OnePairPokerHand implements IPokerHand {
 
     toString(): string {
         return `OnePair[${this.pair.toString()}]`;
+    }
+
+    compareByStrength(other: IPokerHand): number {
+        if (other instanceof OnePairPokerHand) {
+            return this.compareWithOnePair(other);
+        }
+
+        return this.name.compareByStrength(other.name);
     }
 
     compareWithOnePair(other: OnePairPokerHand): number {
@@ -301,6 +310,14 @@ class TwoPairPokerHand implements IPokerHand {
         return this.pairs[1];
     }
 
+    compareByStrength(other: IPokerHand): number {
+        if (other instanceof TwoPairPokerHand) {
+            return this.compareWithTwoPair(other);
+        }
+
+        return this.name.compareByStrength(other.name);
+    }
+
     compareWithTwoPair(other: TwoPairPokerHand): number {
         const strongerPairCompare = this.strongerPair().compareByStrength(
             other.strongerPair()
@@ -326,6 +343,14 @@ class ThreeCardPokerHand implements IPokerHand {
         return `ThreeCard[${this.triple.toString()}]`;
     }
 
+    compareByStrength(other: IPokerHand): number {
+        if (other instanceof ThreeCardPokerHand) {
+            return this.compareWithThreeCard(other);
+        }
+
+        return this.name.compareByStrength(other.name);
+    }
+
     compareWithThreeCard(other: ThreeCardPokerHand): number {
         return this.triple.compareByStrength(other.triple);
     }
@@ -349,6 +374,14 @@ class FullHousePokerHand implements IPokerHand {
         return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
     }
 
+    compareByStrength(other: IPokerHand): number {
+        if (other instanceof FullHousePokerHand) {
+            return this.compareWithFullHouse(other);
+        }
+
+        return this.name.compareByStrength(other.name);
+    }
+
     compareWithFullHouse(other: FullHousePokerHand): number {
         return this.triple.compareByStrength(other.triple);
     }
@@ -358,7 +391,9 @@ class PokerHandCollection {
     private readonly pokerHands: IPokerHand[];
 
     constructor(pokerHands: IPokerHand[]) {
-        this.pokerHands = pokerHands;
+        this.pokerHands = pokerHands.sort(
+            PokerHandCollection.compareByStrength
+        );
     }
 
     toString(): string {
@@ -366,6 +401,14 @@ class PokerHandCollection {
             pokerHand.toString()
         );
         return `PokerHandCollection(${pokerHands.join(', ')})`;
+    }
+
+    strongestPokerHand(): IPokerHand {
+        return this.pokerHands[0];
+    }
+
+    static compareByStrength(a: IPokerHand, b: IPokerHand): number {
+        return a.compareByStrength(b);
     }
 }
 

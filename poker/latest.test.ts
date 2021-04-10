@@ -403,3 +403,37 @@ describe('PokerHand', () => {
         });
     });
 });
+
+describe('PokerHandCollection', () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade3 = new Card(Suit.Spade, new Rank(3));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+    const club1 = new Card(Suit.Club, new Rank(1));
+
+    const onePairRank3 = new OnePairPokerHand(new Pair(diamond3, club3));
+    const onePairRank1 = new OnePairPokerHand(new Pair(diamond1, club1));
+    const twoPair = new TwoPairPokerHand(
+        new Pair(diamond3, club3),
+        new Pair(diamond1, club1)
+    );
+    const threeCard = new ThreeCardPokerHand(
+        new Triple(diamond3, club3, spade3)
+    );
+    const fullHouse = new FullHousePokerHand(
+        new Pair(diamond1, club1),
+        new Triple(diamond3, club3, spade3)
+    );
+
+    const pokerHands = new PokerHandCollection([
+        onePairRank1,
+        onePairRank3,
+        twoPair,
+        threeCard,
+        fullHouse,
+    ]);
+
+    it('strongestPokerHand()', () => {
+        expect(pokerHands.strongestPokerHand()).toEqual(fullHouse);
+    });
+});
