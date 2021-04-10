@@ -1,4 +1,4 @@
-import { Card, Hand, Rank, Suit } from './index';
+import { Card, Hand, Pair, Rank, Suit, Triple } from './index';
 
 describe('Rank', () => {
     describe('constructor', () => {
@@ -165,6 +165,77 @@ describe('Hand', () => {
                     new Hand([diamond1, diamond3, club3, heart4, spade11])
                 )
             ).toBeTruthy();
+        });
+    });
+});
+
+describe('Pair', () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+
+    const pair = new Pair(diamond3, club3);
+
+    describe('constructor', () => {
+        it('success', () => {
+            expect(pair).toBeInstanceOf(Pair);
+        });
+
+        it('invalid pair', () => {
+            expect(() => new Pair(diamond3, diamond1)).toThrow('Invalid cards');
+        });
+    });
+
+    describe('rank', () => {
+        it('Rankが返ること', () => {
+            expect(pair.rank).toEqual(diamond3.rank);
+        });
+    });
+
+    describe('suits', () => {
+        it('スートが強い順に返ること', () => {
+            expect(pair.suits).toEqual([diamond3.suit, club3.suit]);
+            expect(new Pair(club3, diamond3).suits).toEqual([
+                diamond3.suit,
+                club3.suit,
+            ]);
+        });
+    });
+});
+
+describe('Triple', () => {
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade11 = new Card(Suit.Spade, new Rank(11));
+    const heart11 = new Card(Suit.Heart, new Rank(11));
+    const diamond11 = new Card(Suit.Diamond, new Rank(11));
+
+    const triple = new Triple(heart11, diamond11, spade11);
+
+    describe('constructor', () => {
+        it('success', () => {
+            expect(triple).toBeInstanceOf(Triple);
+        });
+
+        it('invalid pair', () => {
+            expect(() => new Triple(spade11, heart11, club3)).toThrow(
+                'Invalid cards'
+            );
+        });
+    });
+
+    describe('rank', () => {
+        it('Rankが返ること', () => {
+            expect(triple.rank).toEqual(spade11.rank);
+        });
+    });
+
+    describe('suits', () => {
+        it('スートが強い順に返ること', () => {
+            expect(triple.suits).toEqual([
+                spade11.suit,
+                heart11.suit,
+                diamond11.suit,
+            ]);
         });
     });
 });

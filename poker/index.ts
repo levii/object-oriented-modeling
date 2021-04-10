@@ -154,6 +154,56 @@ class Suit {
 
 export { Hand, Card, Rank, Suit };
 
+class Pair {
+    private readonly cards: [Card, Card];
+
+    constructor(cardA: Card, cardB: Card) {
+        if (cardA.rank.isEqual(cardB.rank)) {
+            this.cards = [cardA, cardB];
+        } else {
+            throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
+        }
+    }
+
+    get rank(): Rank {
+        return this.cards[0].rank;
+    }
+
+    get suits(): Suit[] {
+        return this.cards.map((card) => card.suit).sort(Suit.compareByStrength);
+    }
+
+    toString(): string {
+        return `Pair(${this.rank}, ${this.suits.join(', ')})`;
+    }
+}
+
+class Triple {
+    private readonly cards: [Card, Card, Card];
+
+    constructor(cardA: Card, cardB: Card, cardC: Card) {
+        if (cardA.rank.isEqual(cardB.rank) && cardB.rank.isEqual(cardC.rank)) {
+            this.cards = [cardA, cardB, cardC];
+        } else {
+            throw new Error(`Invalid cards: ${cardA}, ${cardB}, ${cardC}`);
+        }
+    }
+
+    get rank(): Rank {
+        return this.cards[0].rank;
+    }
+
+    get suits(): Suit[] {
+        return this.cards.map((card) => card.suit).sort(Suit.compareByStrength);
+    }
+
+    toString(): string {
+        return `Triple(${this.rank}, ${this.suits.join(', ')})`;
+    }
+}
+
+export { Pair, Triple };
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 // interface IPokerHand {}
 //
