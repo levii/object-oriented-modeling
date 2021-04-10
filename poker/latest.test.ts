@@ -5,6 +5,7 @@ import {
     OnePairPokerHand,
     Pair,
     PokerHandCollection,
+    PokerHandCollectionFactory,
     Rank,
     Suit,
     ThreeCardPokerHand,
@@ -435,5 +436,25 @@ describe('PokerHandCollection', () => {
 
     it('strongestPokerHand()', () => {
         expect(pokerHands.strongestPokerHand()).toEqual(fullHouse);
+    });
+});
+
+describe('PokerHandCollectionFactory', () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade11 = new Card(Suit.Spade, new Rank(11));
+    const heart11 = new Card(Suit.Heart, new Rank(11));
+    const diamond11 = new Card(Suit.Diamond, new Rank(11));
+
+    const hand = new Hand([diamond3, club3, spade11, heart11, diamond11]);
+
+    it('buildCandidatePokerHands', () => {
+        const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
+            hand
+        );
+        expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
+        expect(candidatePokerHands.strongestPokerHand()).toBeInstanceOf(
+            FullHousePokerHand
+        );
     });
 });

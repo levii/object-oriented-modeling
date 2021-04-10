@@ -44,6 +44,42 @@ class CardCollection {
         const cards = this.cards.map((card) => `${card}`);
         return `CardCollection(${cards.join(', ')})`;
     }
+
+    combinationOfTwoCards(): [Card, Card][] {
+        const combinations: [Card, Card][] = [];
+
+        this.cards.forEach((cardA, i) => {
+            this.cards.forEach((cardB, j) => {
+                if (j > i) {
+                    combinations.push([cardA, cardB]);
+                }
+            });
+        });
+
+        return combinations;
+    }
+
+    all(): Card[] {
+        return Array.from(this.cards);
+    }
+
+    filterByRank(rank: Rank): CardCollection {
+        return new CardCollection(
+            this.cards.filter((card) => card.rank.isEqual(rank))
+        );
+    }
+
+    count(): number {
+        return this.cards.length;
+    }
+
+    present(): boolean {
+        return this.cards.length > 0;
+    }
+
+    ranks(): Rank[] {
+        return Rank.all().filter((rank) => this.filterByRank(rank).present());
+    }
 }
 
 class Card {
@@ -134,6 +170,24 @@ class Rank {
 
     static compareByStrength(a: Rank, b: Rank): number {
         return a.compareByStrength(b);
+    }
+
+    static all(): Rank[] {
+        return [
+            new Rank(1),
+            new Rank(2),
+            new Rank(3),
+            new Rank(4),
+            new Rank(5),
+            new Rank(6),
+            new Rank(7),
+            new Rank(8),
+            new Rank(9),
+            new Rank(10),
+            new Rank(11),
+            new Rank(12),
+            new Rank(13),
+        ];
     }
 }
 
@@ -244,7 +298,7 @@ export { Pair, Triple };
 
 class PokerHandName {
     private readonly value: string;
-    private readonly pokerHandOrder = [
+    private static readonly pokerHandOrder = [
         'FullHousePokerHand',
         'ThreeCardPokerHand',
         'TwoPairPokerHand',
@@ -261,8 +315,8 @@ class PokerHandName {
     public static FullHousePokerHand = new PokerHandName('FullHousePokerHand');
 
     compareByStrength(other: PokerHandName): number {
-        const myOrder = this.pokerHandOrder.indexOf(this.value);
-        const otherOrder = this.pokerHandOrder.indexOf(other.value);
+        const myOrder = PokerHandName.pokerHandOrder.indexOf(this.value);
+        const otherOrder = PokerHandName.pokerHandOrder.indexOf(other.value);
         return myOrder - otherOrder;
     }
 
@@ -432,6 +486,89 @@ class PokerHandCollection {
     }
 }
 
+interface IPokerHandFactory {
+    buildCandidates(hand: Hand): IPokerHand[];
+}
+
+class OnePairPokerHandFactory implements IPokerHandFactory {
+    buildCandidates(hand: Hand): OnePairPokerHand[] {
+        const pokerHands: OnePairPokerHand[] = [];
+
+        hand.cards.combinationOfTwoCards().forEach(([cardA, cardB]) => {
+            if (cardA.isSameRank(cardB)) {
+                const pair = new Pair(cardA, cardB);
+                pokerHands.push(new OnePairPokerHand(pair));
+            }
+        });
+
+        return pokerHands;
+    }
+}
+
+class TwoPairPokerHandFactory implements IPokerHandFactory {
+    buildCandidates(hand: Hand): TwoPairPokerHand[] {
+        // TODO: hand の持つ cards の任意の 4 枚を取り出して、その中に 2 つの2枚組(ペア) を取り出す
+        return [];
+    }
+}
+
+class ThreeCardPokerHandFactory implements IPokerHandFactory {
+    buildCandidates(hand: Hand): ThreeCardPokerHand[] {
+        // TODO: hand の持つ cards の任意の 3枚を取り出して、それらの順位(Rank)が全て同じであれば ThreeCardPokerHand を作成して返す
+        return [];
+    }
+}
+
+class FullHousePokerHandFactory implements IPokerHandFactory {
+    buildCandidates(hand: Hand): FullHousePokerHand[] {
+        const ranks = hand.cards.ranks();
+
+        // FullHouse を構成するのは Rank の種類が 2種類の場合
+        if (ranks.length != 2) {
+            return [];
+        }
+
+        const [rankA, rankB] = ranks;
+        const cardsA = hand.cards.filterByRank(rankA);
+        const cardsB = hand.cards.filterByRank(rankB);
+
+        if (cardsA.count() == 2) {
+            return [this.buildFullHouse(cardsA.all(), cardsB.all())];
+        } else {
+            return [this.buildFullHouse(cardsB.all(), cardsA.all())];
+        }
+    }
+
+    private buildFullHouse(
+        pairCards: Card[],
+        threeCards: Card[]
+    ): FullHousePokerHand {
+        const pair = new Pair(pairCards[0], pairCards[1]);
+        const triple = new Triple(threeCards[0], threeCards[1], threeCards[2]);
+        return new FullHousePokerHand(pair, triple);
+    }
+}
+
+class PokerHandCollectionFactory {
+    private readonly factories: IPokerHandFactory[] = [
+        new OnePairPokerHandFactory(),
+        new TwoPairPokerHandFactory(),
+        new ThreeCardPokerHandFactory(),
+        new FullHousePokerHandFactory(),
+    ];
+
+    buildCandidatePokerHands(hand: Hand): PokerHandCollection {
+        const pokerHands: IPokerHand[] = [];
+
+        this.factories.forEach((factory) => {
+            const candidates = factory.buildCandidates(hand);
+            pokerHands.push(...candidates);
+        });
+
+        return new PokerHandCollection(pokerHands);
+    }
+}
+
 export {
     IPokerHand,
     OnePairPokerHand,
@@ -439,4 +576,5 @@ export {
     ThreeCardPokerHand,
     FullHousePokerHand,
     PokerHandCollection,
+    PokerHandCollectionFactory,
 };
