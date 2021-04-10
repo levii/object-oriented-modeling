@@ -155,54 +155,50 @@ class Suit {
 export { Hand, Card, Rank, Suit };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IPokerHand {}
-
-class OnePairPokerHand implements IPokerHand {
-    readonly pair: [Card, Card];
-
-    constructor(cardA: Card, cardB: Card) {
-        if (cardA.rank === cardB.rank) {
-            this.pair = [cardA, cardB];
-        } else {
-            throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
-        }
-    }
-}
-
-class ThreeCardPokerHand implements IPokerHand {
-    readonly cards: [Card, Card, Card];
-
-    constructor(cardA: Card, cardB: Card, cardC: Card) {
-        if (cardA.rank === cardB.rank && cardB.rank === cardC.rank) {
-            this.cards = [cardA, cardB, cardC];
-        } else {
-            throw new Error(`Invalid cards: ${cardA}, ${cardB}, ${cardC}`);
-        }
-    }
-}
-
-class FullHousePokerHand implements IPokerHand {
-    readonly pair: [Card, Card];
-    readonly threeCards: [Card, Card, Card];
-
-    constructor(pair: [Card, Card], threeCards: [Card, Card, Card]) {
-        this.pair = pair;
-        this.threeCards = threeCards;
-
-        if (this.pair[0].rank !== this.pair[1].rank) {
-            throw new Error(`Invalid pair: ${this.pair}`);
-        }
-        if (
-            this.threeCards[0].rank !== this.threeCards[1].rank ||
-            this.threeCards[0].rank !== this.threeCards[2].rank
-        ) {
-            throw new Error(`Invalid cards: ${this.threeCards}`);
-        }
-
-        if (this.pair[0].rank === this.threeCards[0].rank) {
-            throw new Error(`Invalid cards`);
-        }
-    }
-}
-
-export { IPokerHand, OnePairPokerHand, ThreeCardPokerHand, FullHousePokerHand };
+// interface IPokerHand {}
+//
+// class OnePairPokerHand implements IPokerHand {
+//     private readonly pair: Pair;
+//
+//     constructor(cardA: Card, cardB: Card) {
+//         this.pair = new Pair(cardA, cardB);
+//     }
+//
+//     toString(): string {
+//         return `OnePair(${this.pair.toString()})`;
+//     }
+// }
+//
+// class TwoPairPokerHand implements IPokerHand {
+//     private readonly pairs: [Pair, Pair];
+//
+//     constructor(pairA: Pair, pairB: Pair) {
+//         this.pairs = [pairA, pairB];
+//     }
+// }
+//
+// class ThreeCardPokerHand implements IPokerHand {
+//     private readonly triple: Triple;
+//
+//     constructor(cardA: Card, cardB: Card, cardC: Card) {
+//         this.triple = new Triple(cardA, cardB, cardC);
+//     }
+// }
+//
+// class FullHousePokerHand implements IPokerHand {
+//     private readonly pair: Pair;
+//     private readonly triple: Triple;
+//
+//     constructor(pair: [Card, Card], triple: [Card, Card, Card]) {
+//         this.pair = new Pair(...pair);
+//         this.triple = new Triple(...triple);
+//
+//         if (this.pair.rank.isEqual(this.triple.rank)) {
+//             throw new Error(
+//                 `Invalid pair and triple: ${this.pair}, ${this.triple}`
+//             );
+//         }
+//     }
+// }
+//
+// export { IPokerHand, OnePairPokerHand, ThreeCardPokerHand, FullHousePokerHand };
