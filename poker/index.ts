@@ -1,5 +1,5 @@
 class Hand {
-    public readonly cards: Card[];
+    public readonly cards: CardCollection;
 
     constructor(cards: Card[]) {
         if (cards.length != 5) {
@@ -7,22 +7,42 @@ class Hand {
                 `Invalid the number of cards: expected 5 cards, but got ${cards.length} cards`
             );
         }
-        this.cards = cards;
+        this.cards = new CardCollection(cards);
     }
 
     toString(): string {
-        const cards = this.cards.map((card) => `${card}`);
-        return `Hand(${cards.join(', ')})`;
+        return `Hand(${this.cards.toString()})`;
+    }
+
+    contain(other: Card): boolean {
+        return this.cards.contain(other);
+    }
+
+    isEqual(other: Hand): boolean {
+        return this.cards.isEqual(other.cards);
+    }
+}
+
+class CardCollection {
+    private readonly cards: Card[];
+
+    constructor(cards: Card[] = []) {
+        this.cards = Array.from(cards);
     }
 
     contain(other: Card): boolean {
         return !!this.cards.find((card) => card.isEqual(other));
     }
 
-    isEqual(other: Hand): boolean {
+    isEqual(other: CardCollection): boolean {
         return this.cards.every((card) => {
             return other.contain(card);
         });
+    }
+
+    toString(): string {
+        const cards = this.cards.map((card) => `${card}`);
+        return `CardCollection(${cards.join(', ')})`;
     }
 }
 

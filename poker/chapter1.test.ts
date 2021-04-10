@@ -31,6 +31,8 @@ describe('Chapter1: ポーカー', () => {
             new Card(Suit.Diamond, new Rank(1)),
         ]);
 
-        expect(`${hand}`).toEqual('Hand([♦3], [♣3], [♠J], [♥4], [♦A])');
+        expect(`${hand}`).toEqual(
+            'Hand(CardCollection([♦3], [♣3], [♠J], [♥4], [♦A]))'
+        );
     });
 });
