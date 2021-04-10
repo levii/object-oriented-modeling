@@ -186,6 +186,7 @@ class Pair {
     }
 
     compareByStrength(other: Pair): number {
+        // TODO: 相手のPairとランクが同じ場合には、スートで比較する
         return this.rank.compareByStrength(other.rank);
     }
 }
@@ -243,13 +244,35 @@ class TwoPairPokerHand implements IPokerHand {
             throw new Error(`Invalid pairs: pairA=${pairA}, pairB=${pairB}`);
         }
 
-        this.pairs = [pairA, pairB];
+        this.pairs =
+            pairA.compareByStrength(pairB) < 0
+                ? [pairA, pairB]
+                : [pairB, pairA];
     }
 
     toString(): string {
-        return `TwoPair[${this.pairs
-            .map((pair) => pair.toString())
-            .join(', ')}]`;
+        const pairs = this.pairs.map((pair) => pair.toString());
+        return `TwoPair[${pairs.join(', ')}]`;
+    }
+
+    strongerPair(): Pair {
+        return this.pairs[0];
+    }
+
+    weakPair(): Pair {
+        return this.pairs[1];
+    }
+
+    compareWithTwoPair(other: TwoPairPokerHand): number {
+        const strongerPairCompare = this.strongerPair().compareByStrength(
+            other.strongerPair()
+        );
+
+        if (strongerPairCompare == 0) {
+            return this.weakPair().compareByStrength(other.weakPair());
+        } else {
+            return strongerPairCompare;
+        }
     }
 }
 

@@ -304,6 +304,26 @@ describe('PokerHand', () => {
                 }).toThrow('Invalid pairs');
             });
         });
+
+        describe('compareWithTwoPair()', () => {
+            const diamond11 = new Card(Suit.Diamond, new Rank(11));
+            const club11 = new Card(Suit.Club, new Rank(11));
+
+            const twoPairA = new TwoPairPokerHand(
+                new Pair(diamond3, club3),
+                new Pair(diamond11, club11)
+            );
+            const twoPairB = new TwoPairPokerHand(
+                new Pair(diamond3, club3),
+                new Pair(diamond1, club1)
+            );
+
+            it('役の強い順に並ぶこと', () => {
+                expect(
+                    [twoPairA, twoPairB].sort((a, b) => a.compareWithTwoPair(b))
+                ).toEqual([twoPairB, twoPairA]);
+            });
+        });
     });
 
     describe('ThreeCardPokerHand', () => {
