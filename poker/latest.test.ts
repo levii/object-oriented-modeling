@@ -27,6 +27,24 @@ describe('Rank', () => {
             expect(one.isEqual(two)).toBeFalsy();
         });
     });
+
+    describe('compareByStrength()', () => {
+        it('同じランクのとき', () => {
+            const two = new Rank(2);
+            expect(two.compareByStrength(two)).toEqual(0);
+        });
+
+        it('Rankの強い順に並び替えられること', () => {
+            const ace = new Rank(1);
+            const two = new Rank(2);
+            const five = new Rank(5);
+            const king = new Rank(13);
+
+            expect(
+                [ace, two, five, king].sort(Rank.compareByStrength)
+            ).toEqual([ace, king, five, two]);
+        });
+    });
 });
 
 describe('Card', () => {

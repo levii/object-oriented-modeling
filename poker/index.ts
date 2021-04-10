@@ -63,6 +63,30 @@ class Rank {
     isEqual(other: Rank): boolean {
         return this.toString() === other.toString();
     }
+
+    private strength(): number {
+        if (this.value == 1) {
+            return 14;
+        }
+        return this.value;
+    }
+
+    /**
+     * Rankの強い順に並び替える
+     *
+     *  - other のほうが強い時には、正の値を
+     *  - other のほうが弱い時には、負の値を
+     *  - other と this が同じランクのときには、 0 を返します。
+     *
+     * @param other {Rank}
+     */
+    compareByStrength(other: Rank): number {
+        return other.strength() - this.strength();
+    }
+
+    static compareByStrength(a: Rank, b: Rank): number {
+        return a.compareByStrength(b);
+    }
 }
 
 class Suit {
