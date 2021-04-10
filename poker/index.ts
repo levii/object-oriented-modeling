@@ -180,6 +180,10 @@ class Pair {
     toString(): string {
         return `Pair(${this.rank}, ${this.suits.join(', ')})`;
     }
+
+    isSameRank(other: Pair): boolean {
+        return this.rank.isEqual(other.rank);
+    }
 }
 
 class Triple {
@@ -227,7 +231,7 @@ class TwoPairPokerHand implements IPokerHand {
     private readonly pairs: [Pair, Pair];
 
     constructor(pairA: Pair, pairB: Pair) {
-        if (pairA.rank.isEqual(pairB.rank)) {
+        if (pairA.isSameRank(pairB)) {
             throw new Error(`Invalid pairs: pairA=${pairA}, pairB=${pairB}`);
         }
 
