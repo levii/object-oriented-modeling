@@ -47,6 +47,22 @@ describe('Rank', () => {
     });
 });
 
+describe('Suit', () => {
+    describe('compareByStrength()', () => {
+        it('同じスートのとき', () => {
+            expect(Suit.Diamond.compareByStrength(Suit.Diamond)).toEqual(0);
+        });
+
+        it('スートの強い順に並び替えられること', () => {
+            expect(
+                [Suit.Diamond, Suit.Heart, Suit.Club, Suit.Spade].sort(
+                    Suit.compareByStrength
+                )
+            ).toEqual([Suit.Spade, Suit.Heart, Suit.Diamond, Suit.Club]);
+        });
+    });
+});
+
 describe('Card', () => {
     describe('isEqual()', () => {
         it('同じランク、スートのときに true が返る', () => {

@@ -92,6 +92,7 @@ class Rank {
 class Suit {
     private readonly value: string;
 
+    private readonly strengthOrder = ['Spade', 'Heart', 'Diamond', 'Club'];
     private mapping = {
         Spade: '♠',
         Heart: '♥',
@@ -115,6 +116,16 @@ class Suit {
     public static Heart = new Suit('Heart');
     public static Diamond = new Suit('Diamond');
     public static Club = new Suit('Club');
+
+    compareByStrength(other: Suit): number {
+        const myOrder = this.strengthOrder.indexOf(this.value);
+        const otherOder = this.strengthOrder.indexOf(other.value);
+        return myOrder - otherOder;
+    }
+
+    static compareByStrength(a: Suit, b: Suit): number {
+        return a.compareByStrength(b);
+    }
 }
 
 export { Hand, Card, Rank, Suit };
