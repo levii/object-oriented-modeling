@@ -1,6 +1,19 @@
 import { Card, Hand, Rank, Suit } from './index';
 
 describe('Rank', () => {
+    describe('constructor', () => {
+        it('success', () => {
+            expect(new Rank(1)).toBeInstanceOf(Rank);
+            expect(new Rank(2.0)).toBeInstanceOf(Rank);
+        });
+
+        it('invalid', () => {
+            expect(() => new Rank(0)).toThrow();
+            expect(() => new Rank(1.1)).toThrow();
+            expect(() => new Rank(14)).toThrow();
+        });
+    });
+
     describe('isEqual()', () => {
         it('同じランクのときに true が返る', () => {
             const one = new Rank(1);

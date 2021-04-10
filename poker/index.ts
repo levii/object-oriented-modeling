@@ -38,6 +38,10 @@ class Rank {
     private readonly value: number;
 
     constructor(value: number) {
+        if (value < 1 || 13 < value || !Number.isInteger(value)) {
+            throw new Error(`Invalid value of Rank: got ${value}`);
+        }
+
         this.value = value;
     }
 
