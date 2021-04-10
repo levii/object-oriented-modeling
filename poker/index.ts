@@ -209,28 +209,38 @@ class Triple {
 export { Pair, Triple };
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-// interface IPokerHand {}
-//
-// class OnePairPokerHand implements IPokerHand {
-//     private readonly pair: Pair;
-//
-//     constructor(cardA: Card, cardB: Card) {
-//         this.pair = new Pair(cardA, cardB);
-//     }
-//
-//     toString(): string {
-//         return `OnePair(${this.pair.toString()})`;
-//     }
-// }
-//
-// class TwoPairPokerHand implements IPokerHand {
-//     private readonly pairs: [Pair, Pair];
-//
-//     constructor(pairA: Pair, pairB: Pair) {
-//         this.pairs = [pairA, pairB];
-//     }
-// }
-//
+interface IPokerHand {}
+
+class OnePairPokerHand implements IPokerHand {
+    private readonly pair: Pair;
+
+    constructor(pair: Pair) {
+        this.pair = pair;
+    }
+
+    toString(): string {
+        return `OnePair[${this.pair.toString()}]`;
+    }
+}
+
+class TwoPairPokerHand implements IPokerHand {
+    private readonly pairs: [Pair, Pair];
+
+    constructor(pairA: Pair, pairB: Pair) {
+        if (pairA.rank.isEqual(pairB.rank)) {
+            throw new Error(`Invalid pairs: pairA=${pairA}, pairB=${pairB}`);
+        }
+
+        this.pairs = [pairA, pairB];
+    }
+
+    toString(): string {
+        return `TwoPair[${this.pairs
+            .map((pair) => pair.toString())
+            .join(', ')}]`;
+    }
+}
+
 // class ThreeCardPokerHand implements IPokerHand {
 //     private readonly triple: Triple;
 //
@@ -254,5 +264,5 @@ export { Pair, Triple };
 //         }
 //     }
 // }
-//
-// export { IPokerHand, OnePairPokerHand, ThreeCardPokerHand, FullHousePokerHand };
+
+export { IPokerHand, OnePairPokerHand, TwoPairPokerHand };

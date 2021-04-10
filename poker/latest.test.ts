@@ -1,4 +1,13 @@
-import { Card, Hand, Pair, Rank, Suit, Triple } from './index';
+import {
+    Card,
+    Hand,
+    OnePairPokerHand,
+    Pair,
+    Rank,
+    Suit,
+    Triple,
+    TwoPairPokerHand,
+} from './index';
 
 describe('Rank', () => {
     describe('constructor', () => {
@@ -236,6 +245,43 @@ describe('Triple', () => {
                 heart11.suit,
                 diamond11.suit,
             ]);
+        });
+    });
+});
+
+describe('PokerHand', () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+    const club1 = new Card(Suit.Club, new Rank(1));
+
+    describe('OnePairPokerHand', () => {
+        describe('constructor', () => {
+            it('success', () => {
+                const onePair = new OnePairPokerHand(new Pair(diamond3, club3));
+                expect(onePair.toString()).toContain('OnePair');
+            });
+        });
+    });
+
+    describe('TwoPairPokerHand', () => {
+        describe('constructor', () => {
+            it('success', () => {
+                const twoPair = new TwoPairPokerHand(
+                    new Pair(diamond3, club3),
+                    new Pair(diamond1, club1)
+                );
+                expect(twoPair.toString()).toContain('TwoPair');
+            });
+
+            it('failure', () => {
+                expect(() => {
+                    new TwoPairPokerHand(
+                        new Pair(diamond3, club3),
+                        new Pair(diamond3, club3)
+                    );
+                }).toThrow('Invalid pairs');
+            });
         });
     });
 });
