@@ -32,6 +32,20 @@ class Card {
     isEqual(other: Card): boolean {
         return this.suit.isEqual(other.suit) && this.rank.isEqual(other.rank);
     }
+
+    compareByStrength(other: Card): number {
+        const compareRank = this.rank.compareByStrength(other.rank);
+
+        if (compareRank == 0) {
+            return this.suit.compareByStrength(other.suit);
+        } else {
+            return compareRank;
+        }
+    }
+
+    static compareByStrength(a: Card, b: Card): number {
+        return a.compareByStrength(b);
+    }
 }
 
 class Rank {

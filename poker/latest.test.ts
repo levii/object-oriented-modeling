@@ -84,6 +84,32 @@ describe('Card', () => {
             expect(cardA.isEqual(new Card(Suit.Club, two))).toBeFalsy();
         });
     });
+
+    describe('compareByStrength()', () => {
+        it('ランクの強い順にカードが並ぶ', () => {
+            const card3 = new Card(Suit.Diamond, new Rank(3));
+            const card4 = new Card(Suit.Club, new Rank(4));
+            const card11 = new Card(Suit.Spade, new Rank(11));
+            const card1 = new Card(Suit.Heart, new Rank(1));
+
+            expect(
+                [card1, card3, card4, card11].sort(Card.compareByStrength)
+            ).toEqual([card1, card11, card4, card3]);
+        });
+
+        it('同じランクのカードはスートの強い順に並ぶ', () => {
+            const card3 = new Card(Suit.Diamond, new Rank(3));
+            const card4club = new Card(Suit.Club, new Rank(4));
+            const card4spade = new Card(Suit.Spade, new Rank(4));
+            const card5 = new Card(Suit.Heart, new Rank(5));
+
+            expect(
+                [card3, card4club, card4spade, card5].sort(
+                    Card.compareByStrength
+                )
+            ).toEqual([card5, card4spade, card4club, card3]);
+        });
+    });
 });
 
 describe('Hand', () => {
