@@ -222,10 +222,42 @@ class Triple {
 
 export { Pair, Triple };
 
+class PokerHandName {
+    private readonly value: string;
+    private readonly pokerHandOrder = [
+        'FullHousePokerHand',
+        'ThreeCardPokerHand',
+        'TwoPairPokerHand',
+        'OnePairPokerHand',
+    ];
+
+    private constructor(value: string) {
+        this.value = value;
+    }
+
+    public static OnePairPokerHand = new PokerHandName('OnePairPokerHand');
+    public static TwoPairPokerHand = new PokerHandName('TwoPairPokerHand');
+    public static ThreeCardPokerHand = new PokerHandName('ThreeCardPokerHand');
+    public static FullHousePokerHand = new PokerHandName('FullHousePokerHand');
+
+    compareByStrength(other: PokerHandName): number {
+        const myOrder = this.pokerHandOrder.indexOf(this.value);
+        const otherOrder = this.pokerHandOrder.indexOf(other.value);
+        return myOrder - otherOrder;
+    }
+
+    static compareByStrength(a: PokerHandName, b: PokerHandName): number {
+        return a.compareByStrength(b);
+    }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IPokerHand {}
+interface IPokerHand {
+    name: PokerHandName;
+}
 
 class OnePairPokerHand implements IPokerHand {
+    public readonly name = PokerHandName.OnePairPokerHand;
     private readonly pair: Pair;
 
     constructor(pair: Pair) {
@@ -242,6 +274,7 @@ class OnePairPokerHand implements IPokerHand {
 }
 
 class TwoPairPokerHand implements IPokerHand {
+    public readonly name = PokerHandName.TwoPairPokerHand;
     private readonly pairs: [Pair, Pair];
 
     constructor(pairA: Pair, pairB: Pair) {
@@ -282,6 +315,7 @@ class TwoPairPokerHand implements IPokerHand {
 }
 
 class ThreeCardPokerHand implements IPokerHand {
+    public readonly name = PokerHandName.ThreeCardPokerHand;
     private readonly triple: Triple;
 
     constructor(triple: Triple) {
@@ -298,6 +332,7 @@ class ThreeCardPokerHand implements IPokerHand {
 }
 
 class FullHousePokerHand implements IPokerHand {
+    public readonly name = PokerHandName.FullHousePokerHand;
     private readonly pair: Pair;
     private readonly triple: Triple;
 
