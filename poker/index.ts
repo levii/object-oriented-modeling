@@ -213,6 +213,11 @@ class Triple {
     toString(): string {
         return `Triple(${this.rank}, ${this.suits.join(', ')})`;
     }
+
+    compareByStrength(other: Triple): number {
+        // TODO: 相手のPairとランクが同じ場合には、スートで比較する
+        return this.rank.compareByStrength(other.rank);
+    }
 }
 
 export { Pair, Triple };
@@ -285,6 +290,10 @@ class ThreeCardPokerHand implements IPokerHand {
 
     toString(): string {
         return `ThreeCard[${this.triple.toString()}]`;
+    }
+
+    compareWithThreeCard(other: ThreeCardPokerHand): number {
+        return this.triple.compareByStrength(other.triple);
     }
 }
 

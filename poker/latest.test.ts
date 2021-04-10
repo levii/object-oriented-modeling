@@ -336,6 +336,24 @@ describe('PokerHand', () => {
                 expect(threeCard.toString()).toContain('ThreeCard');
             });
         });
+
+        describe('compareWithThreeCard', () => {
+            const spade1 = new Card(Suit.Spade, new Rank(1));
+            const threeCardA = new ThreeCardPokerHand(
+                new Triple(diamond3, club3, spade3)
+            );
+            const threeCardB = new ThreeCardPokerHand(
+                new Triple(diamond1, club1, spade1)
+            );
+
+            it('役の強い順に並ぶこと', () => {
+                expect(
+                    [threeCardA, threeCardB].sort((a, b) =>
+                        a.compareWithThreeCard(b)
+                    )
+                ).toEqual([threeCardB, threeCardA]);
+            });
+        });
     });
 
     describe('FullHousePokerHand', () => {
