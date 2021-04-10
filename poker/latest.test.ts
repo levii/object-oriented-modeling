@@ -113,26 +113,27 @@ describe('Card', () => {
 });
 
 describe('Hand', () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade11 = new Card(Suit.Spade, new Rank(11));
+    const heart4 = new Card(Suit.Heart, new Rank(4));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+
+    const hand = new Hand([diamond3, club3, spade11, heart4, diamond1]);
+
     describe('constructor', () => {
         it('success', () => {
-            const hand = new Hand([
-                new Card(Suit.Diamond, new Rank(3)),
-                new Card(Suit.Club, new Rank(3)),
-                new Card(Suit.Spade, new Rank(11)),
-                new Card(Suit.Heart, new Rank(4)),
-                new Card(Suit.Diamond, new Rank(1)),
-            ]);
             expect(hand).toBeInstanceOf(Hand);
         });
 
         it('too many cards', () => {
             expect(() => {
                 new Hand([
-                    new Card(Suit.Diamond, new Rank(3)),
-                    new Card(Suit.Club, new Rank(3)),
-                    new Card(Suit.Spade, new Rank(11)),
-                    new Card(Suit.Heart, new Rank(4)),
-                    new Card(Suit.Diamond, new Rank(1)),
+                    diamond3,
+                    club3,
+                    spade11,
+                    heart4,
+                    diamond1,
                     new Card(Suit.Diamond, new Rank(2)),
                 ]);
             }).toThrow('Invalid the number of cards');
@@ -140,8 +141,30 @@ describe('Hand', () => {
 
         it('too few cards', () => {
             expect(() => {
-                new Hand([new Card(Suit.Diamond, new Rank(3))]);
+                new Hand([diamond3]);
             }).toThrow('Invalid the number of cards');
+        });
+    });
+
+    describe('contain()', () => {
+        it('Handに含まれているカードの場合、 true が返る', () => {
+            expect(hand.contain(diamond1)).toBeTruthy();
+        });
+
+        it('Handに含まれていないカードの場合、 false が返る', () => {
+            expect(
+                hand.contain(new Card(Suit.Diamond, new Rank(2)))
+            ).toBeFalsy();
+        });
+    });
+
+    describe('isEqual()', () => {
+        it('カードの順番が違っていても、同じカードの組み合わせならば一致', () => {
+            expect(
+                hand.isEqual(
+                    new Hand([diamond1, diamond3, club3, heart4, spade11])
+                )
+            ).toBeTruthy();
         });
     });
 });

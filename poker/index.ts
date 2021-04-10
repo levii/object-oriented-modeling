@@ -14,6 +14,16 @@ class Hand {
         const cards = this.cards.map((card) => `${card}`);
         return `Hand(${cards.join(', ')})`;
     }
+
+    contain(other: Card): boolean {
+        return !!this.cards.find((card) => card.isEqual(other));
+    }
+
+    isEqual(other: Hand): boolean {
+        return this.cards.every((card) => {
+            return other.contain(card);
+        });
+    }
 }
 
 class Card {
