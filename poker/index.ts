@@ -245,14 +245,18 @@ class TwoPairPokerHand implements IPokerHand {
     }
 }
 
-// class ThreeCardPokerHand implements IPokerHand {
-//     private readonly triple: Triple;
-//
-//     constructor(cardA: Card, cardB: Card, cardC: Card) {
-//         this.triple = new Triple(cardA, cardB, cardC);
-//     }
-// }
-//
+class ThreeCardPokerHand implements IPokerHand {
+    private readonly triple: Triple;
+
+    constructor(triple: Triple) {
+        this.triple = triple;
+    }
+
+    toString(): string {
+        return `ThreeCard[${this.triple.toString()}]`;
+    }
+}
+
 // class FullHousePokerHand implements IPokerHand {
 //     private readonly pair: Pair;
 //     private readonly triple: Triple;
@@ -269,4 +273,4 @@ class TwoPairPokerHand implements IPokerHand {
 //     }
 // }
 
-export { IPokerHand, OnePairPokerHand, TwoPairPokerHand };
+export { IPokerHand, OnePairPokerHand, TwoPairPokerHand, ThreeCardPokerHand };

@@ -5,6 +5,7 @@ import {
     Pair,
     Rank,
     Suit,
+    ThreeCardPokerHand,
     Triple,
     TwoPairPokerHand,
 } from './index';
@@ -252,6 +253,7 @@ describe('Triple', () => {
 describe('PokerHand', () => {
     const diamond3 = new Card(Suit.Diamond, new Rank(3));
     const club3 = new Card(Suit.Club, new Rank(3));
+    const spade3 = new Card(Suit.Spade, new Rank(3));
     const diamond1 = new Card(Suit.Diamond, new Rank(1));
     const club1 = new Card(Suit.Club, new Rank(1));
 
@@ -281,6 +283,18 @@ describe('PokerHand', () => {
                         new Pair(diamond3, club3)
                     );
                 }).toThrow('Invalid pairs');
+            });
+        });
+    });
+
+    describe('ThreeCardPokerHand', () => {
+        describe('constructor', () => {
+            it('success', () => {
+                const threeCard = new ThreeCardPokerHand(
+                    new Triple(diamond3, club3, spade3)
+                );
+                expect(threeCard).toBeInstanceOf(ThreeCardPokerHand);
+                expect(threeCard.toString()).toContain('ThreeCard');
             });
         });
     });
