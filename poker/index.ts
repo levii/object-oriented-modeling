@@ -184,6 +184,10 @@ class Pair {
     isSameRank(other: Pair): boolean {
         return this.rank.isEqual(other.rank);
     }
+
+    compareByStrength(other: Pair): number {
+        return this.rank.compareByStrength(other.rank);
+    }
 }
 
 class Triple {
@@ -224,6 +228,10 @@ class OnePairPokerHand implements IPokerHand {
 
     toString(): string {
         return `OnePair[${this.pair.toString()}]`;
+    }
+
+    compareWithOnePair(other: OnePairPokerHand): number {
+        return this.pair.compareByStrength(other.pair);
     }
 }
 
@@ -275,10 +283,26 @@ class FullHousePokerHand implements IPokerHand {
     }
 }
 
+class PokerHandCollection {
+    private readonly pokerHands: IPokerHand[];
+
+    constructor(pokerHands: IPokerHand[]) {
+        this.pokerHands = pokerHands;
+    }
+
+    toString(): string {
+        const pokerHands = this.pokerHands.map((pokerHand) =>
+            pokerHand.toString()
+        );
+        return `PokerHandCollection(${pokerHands.join(', ')})`;
+    }
+}
+
 export {
     IPokerHand,
     OnePairPokerHand,
     TwoPairPokerHand,
     ThreeCardPokerHand,
     FullHousePokerHand,
+    PokerHandCollection,
 };

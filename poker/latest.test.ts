@@ -4,6 +4,7 @@ import {
     Hand,
     OnePairPokerHand,
     Pair,
+    PokerHandCollection,
     Rank,
     Suit,
     ThreeCardPokerHand,
@@ -263,6 +264,23 @@ describe('PokerHand', () => {
             it('success', () => {
                 const onePair = new OnePairPokerHand(new Pair(diamond3, club3));
                 expect(onePair.toString()).toContain('OnePair');
+            });
+        });
+
+        describe('compareWithOnePair()', () => {
+            const onePairRank3 = new OnePairPokerHand(
+                new Pair(diamond3, club3)
+            );
+            const onePairRank1 = new OnePairPokerHand(
+                new Pair(diamond1, club1)
+            );
+
+            it('役の強い順に並ぶこと', () => {
+                expect(
+                    [onePairRank3, onePairRank1].sort((a, b) =>
+                        a.compareWithOnePair(b)
+                    )
+                ).toEqual([onePairRank1, onePairRank3]);
             });
         });
     });
