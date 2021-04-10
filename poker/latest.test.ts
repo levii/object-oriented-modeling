@@ -1,5 +1,6 @@
 import {
     Card,
+    FullHousePokerHand,
     Hand,
     OnePairPokerHand,
     Pair,
@@ -295,6 +296,28 @@ describe('PokerHand', () => {
                 );
                 expect(threeCard).toBeInstanceOf(ThreeCardPokerHand);
                 expect(threeCard.toString()).toContain('ThreeCard');
+            });
+        });
+    });
+
+    describe('FullHousePokerHand', () => {
+        describe('constructor', () => {
+            it('success', () => {
+                const fullHouse = new FullHousePokerHand(
+                    new Pair(diamond1, club1),
+                    new Triple(diamond3, club3, spade3)
+                );
+                expect(fullHouse).toBeInstanceOf(FullHousePokerHand);
+                expect(fullHouse.toString()).toContain('FullHouse');
+            });
+
+            it('failure', () => {
+                expect(() => {
+                    new FullHousePokerHand(
+                        new Pair(diamond3, club3),
+                        new Triple(diamond3, club3, spade3)
+                    );
+                }).toThrow('Invalid pair and triple');
             });
         });
     });

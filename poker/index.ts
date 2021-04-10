@@ -257,20 +257,28 @@ class ThreeCardPokerHand implements IPokerHand {
     }
 }
 
-// class FullHousePokerHand implements IPokerHand {
-//     private readonly pair: Pair;
-//     private readonly triple: Triple;
-//
-//     constructor(pair: [Card, Card], triple: [Card, Card, Card]) {
-//         this.pair = new Pair(...pair);
-//         this.triple = new Triple(...triple);
-//
-//         if (this.pair.rank.isEqual(this.triple.rank)) {
-//             throw new Error(
-//                 `Invalid pair and triple: ${this.pair}, ${this.triple}`
-//             );
-//         }
-//     }
-// }
+class FullHousePokerHand implements IPokerHand {
+    private readonly pair: Pair;
+    private readonly triple: Triple;
 
-export { IPokerHand, OnePairPokerHand, TwoPairPokerHand, ThreeCardPokerHand };
+    constructor(pair: Pair, triple: Triple) {
+        if (pair.rank.isEqual(triple.rank)) {
+            throw new Error(`Invalid pair and triple: ${pair}, ${triple}`);
+        }
+
+        this.pair = pair;
+        this.triple = triple;
+    }
+
+    toString(): string {
+        return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
+    }
+}
+
+export {
+    IPokerHand,
+    OnePairPokerHand,
+    TwoPairPokerHand,
+    ThreeCardPokerHand,
+    FullHousePokerHand,
+};
