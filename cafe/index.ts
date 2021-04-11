@@ -84,6 +84,14 @@ class Dish {
     toString(): string {
         return `Dish(${this.name}, ${this.nutrition}, ${this.price})`;
     }
+
+    compareByPrice(other: Dish): number {
+        return this.price.compare(other.price);
+    }
+
+    static compareByPrice(a: Dish, b: Dish): number {
+        return a.compareByPrice(b);
+    }
 }
 
 class Nutrition {
@@ -108,14 +116,24 @@ class Price {
         this.value = value;
     }
 
+    static ZERO = new Price(0);
+
     toString(): string {
         return `Price(${this.value}円)`;
+    }
+
+    compare(other: Price): number {
+        return this.value - other.value;
+    }
+
+    add(other: Price): Price {
+        return new Price(this.value + other.value);
     }
 }
 
 export { Plate, Dish, Nutrition, Price };
 
-class DishCollection {
+export class DishCollection {
     private readonly dishes: Dish[];
     constructor(dishes: Dish[]) {
         this.dishes = Array.from(dishes);
@@ -145,10 +163,14 @@ class DishCollection {
 
     orderByPrice(): DishCollection {
         return new DishCollection(
-            Array.from(this.dishes).sort(
-                (a, b) => a.price.value - b.price.value
-            )
+            Array.from(this.dishes).sort(Dish.compareByPrice)
         );
+    }
+
+    totalAmount(): Price {
+        return this.dishes.reduce<Price>((price, dish) => {
+            return price.add(dish.price);
+        }, Price.ZERO);
     }
 }
 
