@@ -14,8 +14,11 @@ class Plate {
     }
 
     totalAmount(): Price {
-        // TODO: Dish の値段を合計したものを返す
-        return new Price(0);
+        return this.dishes.totalAmount();
+    }
+
+    totalNutrition(): Nutrition {
+        return this.dishes.totalNutrition();
     }
 
     findLowestPriceGreenDish(): Dish | undefined {
@@ -28,9 +31,7 @@ class Plate {
         });
 
         // 値段の安い順に並び替えて
-        const sortedGreenDishes = greenDishes.sort(
-            (a, b) => a.price.value - b.price.value
-        );
+        const sortedGreenDishes = greenDishes.sort(Dish.compareByPrice);
         // 最初の要素を返す
         return sortedGreenDishes[0];
     }
@@ -115,6 +116,10 @@ class Nutrition {
             this.green + other.green,
             this.yellow + other.yellow
         );
+    }
+
+    total(): number {
+        return this.red + this.green + this.yellow;
     }
 
     static ZERO = new Nutrition(0, 0, 0);
@@ -289,7 +294,8 @@ class NutritionBalanceDiscount implements IDiscount {
 class NutritionBalanceDiscountFactory implements IDiscountFactory {
     discountAvailable(plate: Plate): boolean {
         // TODO: 赤と緑の合計が 3点以上のときに割引適用
-        return false;
+        const nutrition = plate.totalNutrition();
+        return nutrition.red + nutrition.green >= 3;
     }
 
     build(plate: Plate): NutritionBalanceDiscount {
@@ -300,7 +306,7 @@ class NutritionBalanceDiscountFactory implements IDiscountFactory {
         }
 
         // TODO: 割引対象となる料理(緑を含む一番安いもの)を取得する
-        const targetDish = plate.dishItems()[0];
+        const targetDish = plate.findLowestPriceGreenDish();
         return new NutritionBalanceDiscount(targetDish);
     }
 }
@@ -314,7 +320,8 @@ class NiceCalorieDiscount implements IDiscount {
 class NiceCalorieDiscountFactory implements IDiscountFactory {
     discountAvailable(plate: Plate): boolean {
         // TODO: 三色の合計点数が 6点〜8点の間のときに割引適用
-        return false;
+        const score = plate.totalNutrition().total();
+        return 6 <= score && score <= 8;
     }
 
     build(plate: Plate): NiceCalorieDiscount {
@@ -328,26 +335,15 @@ class NiceCalorieDiscountFactory implements IDiscountFactory {
 
 class LowCarbonDiscount implements IDiscount {
     amount(): DiscountAmount {
-        return new DiscountAmount(30);
-    }
-
-    // 条件: 黄の合計が 5点以下
-    public available(): boolean {
-        return false; // ここは一旦モックで実装
-    }
-    // 割引: 30円引
-    public calcDiscount(): DiscountAmount {
-        if (this.available()) {
-            return new DiscountAmount(30);
-        }
-        return new DiscountAmount(0);
+        return new DiscountAmount(20);
     }
 }
 
 class LowCarbonDiscountFactory implements IDiscountFactory {
     discountAvailable(plate: Plate): boolean {
         // TODO: 黄色の合計が5点以下のときに割引適用
-        return false;
+        const nutrition = plate.totalNutrition();
+        return nutrition.yellow <= 5;
     }
 
     build(plate: Plate): LowCarbonDiscount {
@@ -401,8 +397,10 @@ export {
     DiscountName,
     DiscountAmount,
     Discount,
-    // IDiscount,
-    // LowCarbonDiscount,
-    // NiceCalorieDiscount,
-    // NutritionBalanceDiscount,
+    IDiscount,
+    LowCarbonDiscount,
+    NiceCalorieDiscount,
+    NutritionBalanceDiscount,
+    DiscountCollection,
+    DiscountCollectionFactory,
 };

@@ -1,5 +1,6 @@
 import {
     DiscountAmount,
+    DiscountCollectionFactory,
     Dish,
     DishCollection,
     Nutrition,
@@ -9,6 +10,11 @@ import {
 
 const pasta = new Dish('パスタ&ランチ', new Price(250), new Nutrition(1, 1, 3));
 const bread = new Dish('くるみパン', new Price(150), new Nutrition(0, 0, 3));
+const lowCarbonBread = new Dish(
+    '低糖質パン',
+    new Price(150),
+    new Nutrition(0, 0, 1)
+);
 const dessert = new Dish('フルーツ', new Price(150), new Nutrition(0, 1, 0));
 
 describe('DishCollection', () => {
@@ -51,5 +57,37 @@ describe('DiscountAmount', function () {
         expect(new DiscountAmount(150).add(new DiscountAmount(30))).toEqual(
             new DiscountAmount(180)
         );
+    });
+});
+
+describe('DiscountCollectionFactory', () => {
+    describe('太郎のプレート', () => {
+        const plate = new Plate('太郎のプレート', [pasta, bread, dessert]);
+        const discounts = new DiscountCollectionFactory().build(plate);
+
+        it('1つの割引が適用されていること', () => {
+            expect(discounts.all()).toHaveLength(1);
+        });
+
+        it('割引額が30円であること', () => {
+            expect(discounts.totalAmount()).toEqual(new DiscountAmount(30));
+        });
+    });
+
+    describe('次郎のプレート', () => {
+        const plate = new Plate('次郎のプレート', [
+            pasta,
+            lowCarbonBread,
+            dessert,
+        ]);
+        const discounts = new DiscountCollectionFactory().build(plate);
+
+        it('3つの割引が適用されていること', () => {
+            expect(discounts.all()).toHaveLength(3);
+        });
+
+        it('割引額が100円であること', () => {
+            expect(discounts.totalAmount()).toEqual(new DiscountAmount(100));
+        });
     });
 });
