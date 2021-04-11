@@ -443,18 +443,43 @@ describe('PokerHandCollectionFactory', () => {
     const diamond3 = new Card(Suit.Diamond, new Rank(3));
     const club3 = new Card(Suit.Club, new Rank(3));
     const spade11 = new Card(Suit.Spade, new Rank(11));
+    const heart4 = new Card(Suit.Heart, new Rank(4));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+
+    const diamond5 = new Card(Suit.Diamond, new Rank(5));
+    const club5 = new Card(Suit.Club, new Rank(5));
+    const club11 = new Card(Suit.Club, new Rank(11));
     const heart11 = new Card(Suit.Heart, new Rank(11));
     const diamond11 = new Card(Suit.Diamond, new Rank(11));
 
-    const hand = new Hand([diamond3, club3, spade11, heart11, diamond11]);
+    const taroHand = new Hand([diamond3, club3, spade11, heart4, diamond1]);
+    const jiroHand = new Hand([diamond5, club5, club11, heart11, diamond11]);
 
-    it('buildCandidatePokerHands', () => {
-        const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
-            hand
-        );
-        expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
-        expect(candidatePokerHands.strongestPokerHand()).toBeInstanceOf(
-            FullHousePokerHand
-        );
+    describe('buildCandidatePokerHands()', () => {
+        it('太郎の手札から導かれる一番強い役はワンペアであること', () => {
+            const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
+                taroHand
+            );
+            expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
+            const pokerHand = candidatePokerHands.strongestPokerHand();
+            expect(pokerHand).toEqual(
+                new OnePairPokerHand(new Pair(club3, diamond3))
+            );
+        });
+
+        it('次郎の手札から導かれる一番強い役はフルハウスであること', () => {
+            const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
+                jiroHand
+            );
+            expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
+            const pokerHand = candidatePokerHands.strongestPokerHand();
+            expect(pokerHand).toBeInstanceOf(FullHousePokerHand);
+            expect(pokerHand).toEqual(
+                new FullHousePokerHand(
+                    new Pair(club5, diamond5),
+                    new Triple(club11, heart11, diamond11)
+                )
+            );
+        });
     });
 });
