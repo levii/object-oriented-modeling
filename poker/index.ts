@@ -237,7 +237,10 @@ class Pair {
 
     constructor(cardA: Card, cardB: Card) {
         if (cardA.isSameRank(cardB)) {
-            this.cards = [cardA, cardB];
+            this.cards = [cardA, cardB].sort(Card.compareByStrength) as [
+                Card,
+                Card
+            ];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
         }
@@ -248,7 +251,7 @@ class Pair {
     }
 
     get suits(): Suit[] {
-        return this.cards.map((card) => card.suit).sort(Suit.compareByStrength);
+        return this.cards.map((card) => card.suit);
     }
 
     toString(): string {
