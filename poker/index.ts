@@ -480,6 +480,10 @@ class PokerHandCollection {
         return `PokerHandCollection(${pokerHands.join(', ')})`;
     }
 
+    all(): IPokerHand[] {
+        return Array.from(this.pokerHands)
+    }
+
     strongestPokerHand(): IPokerHand {
         return this.pokerHands[0];
     }

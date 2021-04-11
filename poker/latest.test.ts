@@ -456,30 +456,43 @@ describe('PokerHandCollectionFactory', () => {
     const jiroHand = new Hand([diamond5, club5, club11, heart11, diamond11]);
 
     describe('buildCandidatePokerHands()', () => {
-        it('太郎の手札から導かれる一番強い役はワンペアであること', () => {
+        describe('太郎の手札に対して', function () {
             const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
                 taroHand
             );
-            expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
-            const pokerHand = candidatePokerHands.strongestPokerHand();
-            expect(pokerHand).toEqual(
-                new OnePairPokerHand(new Pair(club3, diamond3))
-            );
+
+            it('候補となる役は1つだけであること', () => {
+                expect(candidatePokerHands.all()).toHaveLength(1);
+            });
+
+            it('一番強い役はワンペアであること', () => {
+                const pokerHand = candidatePokerHands.strongestPokerHand();
+                expect(pokerHand).toEqual(
+                    new OnePairPokerHand(new Pair(club3, diamond3))
+                );
+            });
         });
 
-        it('次郎の手札から導かれる一番強い役はフルハウスであること', () => {
+        describe('次郎の手札に対して', () => {
             const candidatePokerHands = new PokerHandCollectionFactory().buildCandidatePokerHands(
                 jiroHand
             );
-            expect(candidatePokerHands).toBeInstanceOf(PokerHandCollection);
-            const pokerHand = candidatePokerHands.strongestPokerHand();
-            expect(pokerHand).toBeInstanceOf(FullHousePokerHand);
-            expect(pokerHand).toEqual(
-                new FullHousePokerHand(
-                    new Pair(club5, diamond5),
-                    new Triple(club11, heart11, diamond11)
-                )
-            );
+
+            it('候補となる役にワンペアが含まれること', () => {
+                expect(candidatePokerHands.all()).toContainEqual(
+                    new OnePairPokerHand(new Pair(diamond5, club5))
+                );
+            });
+
+            it('一番強い役はフルハウスであること', () => {
+                const pokerHand = candidatePokerHands.strongestPokerHand();
+                expect(pokerHand).toEqual(
+                    new FullHousePokerHand(
+                        new Pair(club5, diamond5),
+                        new Triple(club11, heart11, diamond11)
+                    )
+                );
+            });
         });
     });
 });
