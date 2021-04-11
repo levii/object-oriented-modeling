@@ -28,6 +28,12 @@ describe('DishCollection', () => {
             );
         });
     });
+
+    it('totalNutrition()', () => {
+        expect(dishCollection.totalNutrition()).toEqual(
+            new Nutrition(1, 1 + 1, 3 + 3)
+        );
+    });
 });
 
 describe('Plate', () => {

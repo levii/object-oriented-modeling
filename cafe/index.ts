@@ -108,6 +108,16 @@ class Nutrition {
     toString(): string {
         return `Nutrition(赤:${this.red}, 緑:${this.green}, 黄:${this.yellow})`;
     }
+
+    add(other: Nutrition): Nutrition {
+        return new Nutrition(
+            this.red + other.red,
+            this.green + other.green,
+            this.yellow + other.yellow
+        );
+    }
+
+    static ZERO = new Nutrition(0, 0, 0);
 }
 
 class Price {
@@ -171,6 +181,12 @@ export class DishCollection {
         return this.dishes.reduce<Price>((price, dish) => {
             return price.add(dish.price);
         }, Price.ZERO);
+    }
+
+    totalNutrition(): Nutrition {
+        return this.dishes.reduce<Nutrition>((nutrition, dish) => {
+            return nutrition.add(dish.nutrition);
+        }, Nutrition.ZERO);
     }
 }
 
