@@ -185,6 +185,11 @@ class DiscountAmount {
     }
 
     static ZERO = new DiscountAmount(0);
+
+    static buildFromPrice(price: Price, rate: number): DiscountAmount {
+        // TODO: 端数処理が必要
+        return new DiscountAmount(price.value * rate);
+    }
 }
 
 /**
@@ -237,6 +242,142 @@ class Discount {
         // ナイスカロリーセット割引の条件に適合したときに、その割引金額を返す
         // 適合しないときには、 0円割引として値を返す
         return new DiscountAmount(0);
+    }
+}
+
+interface IDiscount {
+    amount(): DiscountAmount;
+}
+
+interface IDiscountFactory {
+    discountAvailable(plate: Plate): boolean;
+    build(plate: Plate): IDiscount;
+}
+
+class NutritionBalanceDiscount implements IDiscount {
+    private readonly targetDish: Dish;
+    static DISCOUNT_RATE = 0.2;
+
+    constructor(targetDish: Dish) {
+        this.targetDish = targetDish;
+    }
+
+    amount(): DiscountAmount {
+        return DiscountAmount.buildFromPrice(
+            this.targetDish.price,
+            NutritionBalanceDiscount.DISCOUNT_RATE
+        );
+    }
+}
+
+class NutritionBalanceDiscountFactory implements IDiscountFactory {
+    discountAvailable(plate: Plate): boolean {
+        // TODO: 赤と緑の合計が 3点以上のときに割引適用
+        return false;
+    }
+
+    build(plate: Plate): NutritionBalanceDiscount {
+        if (!this.discountAvailable(plate)) {
+            throw new Error(
+                `Cloud not build NutritionBalanceDiscount: ${plate}`
+            );
+        }
+
+        // TODO: 割引対象となる料理(緑を含む一番安いもの)を取得する
+        const targetDish = plate.dishItems()[0];
+        return new NutritionBalanceDiscount(targetDish);
+    }
+}
+
+class NiceCalorieDiscount implements IDiscount {
+    amount(): DiscountAmount {
+        return new DiscountAmount(50);
+    }
+}
+
+class NiceCalorieDiscountFactory implements IDiscountFactory {
+    discountAvailable(plate: Plate): boolean {
+        // TODO: 三色の合計点数が 6点〜8点の間のときに割引適用
+        return false;
+    }
+
+    build(plate: Plate): NiceCalorieDiscount {
+        if (!this.discountAvailable(plate)) {
+            throw new Error(`Cloud not build NiceCalorieDiscount: ${plate}`);
+        }
+
+        return new NiceCalorieDiscount();
+    }
+}
+
+class LowCarbonDiscount implements IDiscount {
+    amount(): DiscountAmount {
+        return new DiscountAmount(30);
+    }
+
+    // 条件: 黄の合計が 5点以下
+    public available(): boolean {
+        return false; // ここは一旦モックで実装
+    }
+    // 割引: 30円引
+    public calcDiscount(): DiscountAmount {
+        if (this.available()) {
+            return new DiscountAmount(30);
+        }
+        return new DiscountAmount(0);
+    }
+}
+
+class LowCarbonDiscountFactory implements IDiscountFactory {
+    discountAvailable(plate: Plate): boolean {
+        // TODO: 黄色の合計が5点以下のときに割引適用
+        return false;
+    }
+
+    build(plate: Plate): LowCarbonDiscount {
+        if (!this.discountAvailable(plate)) {
+            throw new Error(`Cloud not build LowCarbonDiscount: ${plate}`);
+        }
+
+        return new LowCarbonDiscount();
+    }
+}
+
+class DiscountCollection {
+    private readonly discounts: IDiscount[];
+
+    constructor(discounts: IDiscount[]) {
+        this.discounts = Array.from(discounts);
+    }
+
+    all(): IDiscount[] {
+        return Array.from(this.discounts);
+    }
+
+    totalAmount(): DiscountAmount {
+        return this.discounts.reduce<DiscountAmount>((amount, discount) => {
+            return amount.add(discount.amount());
+        }, DiscountAmount.ZERO);
+    }
+}
+
+class DiscountCollectionFactory {
+    private readonly factories: IDiscountFactory[] = [
+        new NutritionBalanceDiscountFactory(),
+        new NiceCalorieDiscountFactory(),
+        new LowCarbonDiscountFactory(),
+    ];
+
+    build(plate: Plate): DiscountCollection {
+        const discounts: IDiscount[] = [];
+
+        this.factories.forEach((factory) => {
+            if (factory.discountAvailable(plate)) {
+                discounts.push(factory.build(plate));
+            }
+        });
+
+        return new DiscountCollection(discounts);
     }
 }
 
