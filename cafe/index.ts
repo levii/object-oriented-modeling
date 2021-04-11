@@ -241,122 +241,122 @@ class Discount {
 }
 
 // 割引の種類に応じてクラスを分ける
-
-interface IDiscount {
-    available(): boolean;
-    calcDiscount(): DiscountAmount;
-}
-
-class NutritionBalanceDiscount implements IDiscount {
-    private readonly plate: Plate;
-
-    public constructor(plate: Plate) {
-        this.plate = plate;
-    }
-
-    // 条件: 赤と緑の合計が 3点以上のとき
-    public available(): boolean {
-        return false; // ここは一旦モックで実装
-    }
-
-    // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
-    public calcDiscount(): DiscountAmount {
-        if (!this.available()) {
-            // 適用条件を満たさないときは 0円割引として返す
-            return new DiscountAmount(0);
-        }
-
-        // 緑を含む料理を探す
-        const greenDishes = [] as Dish[];
-        this.plate.dishItems().forEach((dish) => {
-            if (dish.nutrition.green > 0) {
-                greenDishes.push(dish);
-            }
-        });
-
-        // 値段の安い順に並び替えて
-        const sortedGreenDishes = greenDishes.sort(
-            (a, b) => a.price.value - b.price.value
-        );
-        // 先頭の要素(=一番安い料理)を取り出す
-        const lowestPriceDish = sortedGreenDishes[0];
-        if (lowestPriceDish) {
-            // その料理の 20% が割引金額
-            return new DiscountAmount(lowestPriceDish.price.value * 0.2);
-        } else {
-            return new DiscountAmount(0);
-        }
-    }
-}
-
-class NutritionBalanceDiscount2 implements IDiscount {
-    private readonly plate: Plate;
-    public constructor(plate: Plate) {
-        this.plate = plate;
-    }
-
-    // 条件: 赤と緑の合計が 3点以上のとき
-    public available(): boolean {
-        return false; // TODO: 実装する
-    }
-
-    // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
-    public calcDiscount(): DiscountAmount {
-        if (!this.available()) {
-            return new DiscountAmount(0);
-        }
-
-        const targetDish = this.plate.findLowestPriceGreenDish();
-        if (targetDish) {
-            return new DiscountAmount(targetDish.price.value * 0.2);
-        } else {
-            return new DiscountAmount(0);
-        }
-    }
-}
-
-class NiceCalorieDiscount implements IDiscount {
-    private readonly plate: Plate;
-    public constructor(plate: Plate) {
-        this.plate = plate;
-    }
-    // 条件: 三色の合計点数が 6点〜8点 の間
-    public available(): boolean {
-        return false; // ここは一旦モックで実装
-    }
-    // 割引: 50円引
-    public calcDiscount(): DiscountAmount {
-        if (this.available()) {
-            return new DiscountAmount(50);
-        }
-        return new DiscountAmount(0);
-    }
-}
-
-class LowCarbonDiscount implements IDiscount {
-    private readonly plate: Plate;
-    public constructor(plate: Plate) {
-        this.plate = plate;
-    }
-    // 条件: 黄の合計が 5点以下
-    public available(): boolean {
-        return false; // ここは一旦モックで実装
-    }
-    // 割引: 30円引
-    public calcDiscount(): DiscountAmount {
-        if (this.available()) {
-            return new DiscountAmount(30);
-        }
-        return new DiscountAmount(0);
-    }
-}
-
+//
+// interface IDiscount {
+//     available(): boolean;
+//     calcDiscount(): DiscountAmount;
+// }
+//
+// class NutritionBalanceDiscount implements IDiscount {
+//     private readonly plate: Plate;
+//
+//     public constructor(plate: Plate) {
+//         this.plate = plate;
+//     }
+//
+//     // 条件: 赤と緑の合計が 3点以上のとき
+//     public available(): boolean {
+//         return false; // ここは一旦モックで実装
+//     }
+//
+//     // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
+//     public calcDiscount(): DiscountAmount {
+//         if (!this.available()) {
+//             // 適用条件を満たさないときは 0円割引として返す
+//             return new DiscountAmount(0);
+//         }
+//
+//         // 緑を含む料理を探す
+//         const greenDishes = [] as Dish[];
+//         this.plate.dishItems().forEach((dish) => {
+//             if (dish.nutrition.green > 0) {
+//                 greenDishes.push(dish);
+//             }
+//         });
+//
+//         // 値段の安い順に並び替えて
+//         const sortedGreenDishes = greenDishes.sort(
+//             (a, b) => a.price.value - b.price.value
+//         );
+//         // 先頭の要素(=一番安い料理)を取り出す
+//         const lowestPriceDish = sortedGreenDishes[0];
+//         if (lowestPriceDish) {
+//             // その料理の 20% が割引金額
+//             return new DiscountAmount(lowestPriceDish.price.value * 0.2);
+//         } else {
+//             return new DiscountAmount(0);
+//         }
+//     }
+// }
+//
+// class NutritionBalanceDiscount2 implements IDiscount {
+//     private readonly plate: Plate;
+//     public constructor(plate: Plate) {
+//         this.plate = plate;
+//     }
+//
+//     // 条件: 赤と緑の合計が 3点以上のとき
+//     public available(): boolean {
+//         return false; // TODO: 実装する
+//     }
+//
+//     // 割引: 緑を含む料理が 20% 割引（一番安いもの1点）
+//     public calcDiscount(): DiscountAmount {
+//         if (!this.available()) {
+//             return new DiscountAmount(0);
+//         }
+//
+//         const targetDish = this.plate.findLowestPriceGreenDish();
+//         if (targetDish) {
+//             return new DiscountAmount(targetDish.price.value * 0.2);
+//         } else {
+//             return new DiscountAmount(0);
+//         }
+//     }
+// }
+//
+// class NiceCalorieDiscount implements IDiscount {
+//     private readonly plate: Plate;
+//     public constructor(plate: Plate) {
+//         this.plate = plate;
+//     }
+//     // 条件: 三色の合計点数が 6点〜8点 の間
+//     public available(): boolean {
+//         return false; // ここは一旦モックで実装
+//     }
+//     // 割引: 50円引
+//     public calcDiscount(): DiscountAmount {
+//         if (this.available()) {
+//             return new DiscountAmount(50);
+//         }
+//         return new DiscountAmount(0);
+//     }
+// }
+//
+// class LowCarbonDiscount implements IDiscount {
+//     private readonly plate: Plate;
+//     public constructor(plate: Plate) {
+//         this.plate = plate;
+//     }
+//     // 条件: 黄の合計が 5点以下
+//     public available(): boolean {
+//         return false; // ここは一旦モックで実装
+//     }
+//     // 割引: 30円引
+//     public calcDiscount(): DiscountAmount {
+//         if (this.available()) {
+//             return new DiscountAmount(30);
+//         }
+//         return new DiscountAmount(0);
+//     }
+// }
+//
 export {
     DiscountName,
     DiscountAmount,
     Discount,
-    IDiscount,
-    LowCarbonDiscount,
-    NiceCalorieDiscount,
-    NutritionBalanceDiscount,
+    // IDiscount,
+    // LowCarbonDiscount,
+    // NiceCalorieDiscount,
+    // NutritionBalanceDiscount,
 };

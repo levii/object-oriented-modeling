@@ -1,14 +1,4 @@
-import {
-    Discount,
-    DiscountName,
-    Dish,
-    LowCarbonDiscount,
-    NiceCalorieDiscount,
-    Nutrition,
-    NutritionBalanceDiscount,
-    Plate,
-    Price,
-} from './index';
+import { Discount, DiscountName, Dish, Nutrition, Plate, Price } from './index';
 
 it('Chapter2: カフェ (太郎のプレート)', () => {
     const pasta = new Dish(
@@ -34,14 +24,14 @@ it('Chapter2: カフェ (太郎のプレート)', () => {
         new Discount(DiscountName.NutritionGoodBalance, taroPlate),
     ];
 
-    const taroDiscounts_2 = [
-        new LowCarbonDiscount(taroPlate),
-        new NiceCalorieDiscount(taroPlate),
-        new NutritionBalanceDiscount(taroPlate),
-    ];
+    // const taroDiscounts_2 = [
+    //     new LowCarbonDiscount(taroPlate),
+    //     new NiceCalorieDiscount(taroPlate),
+    //     new NutritionBalanceDiscount(taroPlate),
+    // ];
 
     // 太郎のプレートに対する割引の候補の中から、有効なものだけを取り出す
-    taroDiscounts_2.filter((discount) => discount.available());
+    // taroDiscounts_2.filter((discount) => discount.available());
 });
 
 it('Chapter2: カフェ (次郎のプレート)', () => {
