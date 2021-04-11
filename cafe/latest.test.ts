@@ -1,4 +1,11 @@
-import { Dish, DishCollection, Nutrition, Plate, Price } from './index';
+import {
+    DiscountAmount,
+    Dish,
+    DishCollection,
+    Nutrition,
+    Plate,
+    Price,
+} from './index';
 
 const pasta = new Dish('パスタ&ランチ', new Price(250), new Nutrition(1, 1, 3));
 const bread = new Dish('くるみパン', new Price(150), new Nutrition(0, 0, 3));
@@ -30,5 +37,13 @@ describe('Plate', () => {
         it('itemCount()', () => {
             expect(taroPlate.itemCount()).toEqual(3);
         });
+    });
+});
+
+describe('DiscountAmount', function () {
+    it('add()', () => {
+        expect(new DiscountAmount(150).add(new DiscountAmount(30))).toEqual(
+            new DiscountAmount(180)
+        );
     });
 });

@@ -183,6 +183,8 @@ class DiscountAmount {
     add(other: DiscountAmount): DiscountAmount {
         return new DiscountAmount(this.value + other.value);
     }
+
+    static ZERO = new DiscountAmount(0);
 }
 
 /**
