@@ -1,11 +1,11 @@
 class Plate {
     public readonly name: string;
     // 1つの Plate は、複数個の Dish を持つ
-    public readonly dishes: Dish[];
+    private readonly dishes: DishCollection;
 
     constructor(name: string, dishes: Dish[]) {
         this.name = name;
-        this.dishes = dishes;
+        this.dishes = new DishCollection(dishes);
     }
 
     toString(): string {
@@ -21,7 +21,7 @@ class Plate {
     findLowestPriceGreenDish(): Dish | undefined {
         // 緑を含む料理を探す
         const greenDishes = [];
-        this.dishes.forEach((dish) => {
+        this.dishItems().forEach((dish) => {
             if (dish.nutrition.green > 0) {
                 greenDishes.push(dish);
             }
@@ -33,6 +33,14 @@ class Plate {
         );
         // 最初の要素を返す
         return sortedGreenDishes[0];
+    }
+
+    dishItems(): Dish[] {
+        return this.dishes.all();
+    }
+
+    itemCount(): number {
+        return this.dishes.count();
     }
 }
 
@@ -110,7 +118,15 @@ export { Plate, Dish, Nutrition, Price };
 class DishCollection {
     private readonly dishes: Dish[];
     constructor(dishes: Dish[]) {
-        this.dishes = dishes;
+        this.dishes = Array.from(dishes);
+    }
+
+    count(): number {
+        return this.dishes.length;
+    }
+
+    all(): Dish[] {
+        return Array.from(this.dishes);
     }
 
     map<T>(fn: (value: Dish, index: number) => T): T[] {
@@ -228,7 +244,7 @@ class NutritionBalanceDiscount implements IDiscount {
 
         // 緑を含む料理を探す
         const greenDishes = [] as Dish[];
-        this.plate.dishes.forEach((dish) => {
+        this.plate.dishItems().forEach((dish) => {
             if (dish.nutrition.green > 0) {
                 greenDishes.push(dish);
             }
