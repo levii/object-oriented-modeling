@@ -22,18 +22,9 @@ class Plate {
     }
 
     findLowestPriceGreenDish(): Dish | undefined {
-        // 緑を含む料理を探す
-        const greenDishes = [];
-        this.dishItems().forEach((dish) => {
-            if (dish.nutrition.green > 0) {
-                greenDishes.push(dish);
-            }
-        });
-
-        // 値段の安い順に並び替えて
-        const sortedGreenDishes = greenDishes.sort(Dish.compareByPrice);
-        // 最初の要素を返す
-        return sortedGreenDishes[0];
+        // 緑を含む一番安い料理を探す
+        const greenDishes = this.dishes.greenDishes().orderByPrice();
+        return greenDishes.first();
     }
 
     dishCollection(): DishCollection {
@@ -46,32 +37,6 @@ class Plate {
 
     itemCount(): number {
         return this.dishes.count();
-    }
-}
-
-class Plate2 {
-    public readonly name: string;
-    public readonly dishes: DishCollection;
-
-    constructor(name: string, dishes: Dish[]) {
-        this.name = name;
-        this.dishes = new DishCollection(dishes);
-    }
-
-    toString(): string {
-        const dishes = this.dishes.map((dish) => ` - ${dish.toString()}`);
-        return `Plate ${this.name}\n${dishes.join('\n')}`;
-    }
-
-    totalAmount(): Price {
-        // TODO: Dish の値段を合計したものを返す
-        return new Price(0);
-    }
-
-    findLowestPriceGreenDish(): Dish | undefined {
-        // 緑を含む料理を探す
-        const greenDishes = this.dishes.greenDishes().orderByPrice();
-        return greenDishes.first();
     }
 }
 
