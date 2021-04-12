@@ -36,6 +36,10 @@ class Plate {
         return sortedGreenDishes[0];
     }
 
+    dishCollection(): DishCollection {
+        return this.dishes;
+    }
+
     dishItems(): Dish[] {
         return this.dishes.all();
     }
@@ -210,6 +214,10 @@ class DiscountAmount {
     static buildFromPrice(price: Price, rate: number): DiscountAmount {
         // TODO: 端数処理が必要
         return new DiscountAmount(price.value * rate);
+    }
+
+    toPrice(): Price {
+        return new Price(-1 * this.value);
     }
 }
 
@@ -393,6 +401,28 @@ class DiscountCollectionFactory {
     }
 }
 
+class Order {
+    private readonly dishes: DishCollection;
+    private readonly discounts: DiscountCollection;
+
+    constructor(dishes: DishCollection, discounts: DiscountCollection) {
+        this.dishes = dishes;
+        this.discounts = discounts;
+    }
+
+    subtotalAmount(): Price {
+        return this.dishes.totalAmount();
+    }
+
+    discountAmount(): DiscountAmount {
+        return this.discounts.totalAmount();
+    }
+
+    totalAmount(): Price {
+        return this.subtotalAmount().add(this.discountAmount().toPrice());
+    }
+}
+
 export {
     DiscountName,
     DiscountAmount,
@@ -403,4 +433,5 @@ export {
     NutritionBalanceDiscount,
     DiscountCollection,
     DiscountCollectionFactory,
+    Order,
 };

@@ -4,6 +4,7 @@ import {
     Dish,
     DishCollection,
     Nutrition,
+    Order,
     Plate,
     Price,
 } from './index';
@@ -88,6 +89,36 @@ describe('DiscountCollectionFactory', () => {
 
         it('割引額が100円であること', () => {
             expect(discounts.totalAmount()).toEqual(new DiscountAmount(100));
+        });
+    });
+});
+
+describe('Order', () => {
+    describe('太郎のプレート', () => {
+        const plate = new Plate('太郎のプレート', [pasta, bread, dessert]);
+        const discounts = new DiscountCollectionFactory().build(plate);
+        const order = new Order(plate.dishCollection(), discounts);
+
+        it('小計、割引額、合計額が計算できること', () => {
+            expect(order.subtotalAmount()).toEqual(new Price(550));
+            expect(order.discountAmount()).toEqual(new DiscountAmount(30));
+            expect(order.totalAmount()).toEqual(new Price(520));
+        });
+    });
+
+    describe('次郎のプレート', () => {
+        const plate = new Plate('次郎のプレート', [
+            pasta,
+            lowCarbonBread,
+            dessert,
+        ]);
+        const discounts = new DiscountCollectionFactory().build(plate);
+        const order = new Order(plate.dishCollection(), discounts);
+
+        it('小計、割引額、合計額が計算できること', () => {
+            expect(order.subtotalAmount()).toEqual(new Price(550));
+            expect(order.discountAmount()).toEqual(new DiscountAmount(100));
+            expect(order.totalAmount()).toEqual(new Price(450));
         });
     });
 });
