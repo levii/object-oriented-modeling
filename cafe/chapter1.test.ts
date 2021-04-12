@@ -44,9 +44,11 @@ describe('チャプター１', () => {
         expect(taroPlate.dishItems()).toHaveLength(3);
         expect(taroPlate.toString()).toEqual(
             `Plate 太郎のプレート
- - Dish(パスタ&ランチ, Nutrition(赤:1, 緑:1, 黄:3), Price(250円))
- - Dish(くるみパン, Nutrition(赤:0, 緑:0, 黄:3), Price(150円))
- - Dish(フルーツ, Nutrition(赤:0, 緑:1, 黄:0), Price(150円))`
+DishCollection(
+  Dish(パスタ&ランチ, Nutrition(赤:1, 緑:1, 黄:3), Price(250円)),
+  Dish(くるみパン, Nutrition(赤:0, 緑:0, 黄:3), Price(150円)),
+  Dish(フルーツ, Nutrition(赤:0, 緑:1, 黄:0), Price(150円))
+)`
         );
         // expect(taroPlate.dishes[0]).toEqual('パスタ&サラダ');
     });

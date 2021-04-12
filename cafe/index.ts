@@ -9,8 +9,7 @@ class Plate {
     }
 
     toString(): string {
-        const dishes = this.dishes.map((dish) => ` - ${dish.toString()}`);
-        return `Plate ${this.name}\n${dishes.join('\n')}`;
+        return `Plate ${this.name}\n${this.dishes.toString()}`;
     }
 
     totalAmount(): Price {
@@ -127,12 +126,13 @@ export class DishCollection {
         return this.dishes.length;
     }
 
-    all(): Dish[] {
-        return Array.from(this.dishes);
+    toString(): string {
+        const dishes = this.dishes.map((dish) => `  ${dish.toString()}`);
+        return `DishCollection(\n${dishes.join(',\n')}\n)`;
     }
 
-    map<T>(fn: (value: Dish, index: number) => T): T[] {
-        return this.dishes.map(fn);
+    all(): Dish[] {
+        return Array.from(this.dishes);
     }
 
     first(): Dish | undefined {
