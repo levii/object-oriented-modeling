@@ -103,6 +103,26 @@ class Card {
         return this.rank.isEqual(other.rank);
     }
 
+    /**
+     * other よりも強いカードのときに true を返します
+     *
+     * @param other {Card}
+     */
+    isStrongerThan(other: Card): boolean {
+        return this.compareByStrength(other) < 0;
+    }
+
+    /**
+     * Cardの強い順に並び替える
+     *
+     *  - other のほうが強い時には、正の値を
+     *  - other のほうが弱い時には、負の値を
+     *  - other と this が同じランクのときには、 0 を返します。
+     *
+     *  sort() の compareFunction に渡すと、配列の先頭が最も強く、末尾が最も弱い順に並び替えます。
+     *
+     * @param other {Card}
+     */
     compareByStrength(other: Card): number {
         const compareRank = this.rank.compareByStrength(other.rank);
 

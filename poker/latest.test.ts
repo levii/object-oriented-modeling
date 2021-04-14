@@ -146,6 +146,23 @@ describe('Card', () => {
             ).toEqual([card5, card4spade, card4club, card3]);
         });
     });
+
+    describe('isStrongerThan()', () => {
+        const card3 = new Card(Suit.Diamond, new Rank(3));
+        const card4club = new Card(Suit.Club, new Rank(4));
+        const card4spade = new Card(Suit.Spade, new Rank(4));
+        const card1 = new Card(Suit.Heart, new Rank(1));
+
+        it('エースのカードの方が強い', () => {
+            expect(card1.isStrongerThan(card3)).toBeTruthy();
+            expect(card1.isStrongerThan(card4club)).toBeTruthy();
+            expect(card1.isStrongerThan(card4spade)).toBeTruthy();
+        });
+
+        it('同じランク(4)のときは、スートで比較してスペードのほうが強い', () => {
+            expect(card4spade.isStrongerThan(card4club)).toBeTruthy();
+        });
+    });
 });
 
 describe('Hand', () => {
