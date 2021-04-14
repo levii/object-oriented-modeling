@@ -347,6 +347,54 @@ class FullHousePokerHand implements IPokerHand {
     }
 }
 
+const chapter2taro = () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade11 = new Card(Suit.Spade, new Rank(11));
+    const heart4 = new Card(Suit.Heart, new Rank(4));
+    const diamond1 = new Card(Suit.Diamond, new Rank(1));
+
+    const hand = new Hand([diamond3, club3, spade11, heart4, diamond1]);
+
+    const candidatePokerHands = [
+        new OnePairPokerHand(new Pair(diamond3, club3)),
+    ];
+};
+
+const chapter2jiro = () => {
+    const diamond3 = new Card(Suit.Diamond, new Rank(3));
+    const club3 = new Card(Suit.Club, new Rank(3));
+    const spade11 = new Card(Suit.Club, new Rank(11));
+    const heart11 = new Card(Suit.Heart, new Rank(11));
+    const diamond11 = new Card(Suit.Diamond, new Rank(11));
+
+    const hand = new Hand([diamond3, club3, spade11, heart11, diamond11]);
+
+    const candidatePokerHands = [
+        new OnePairPokerHand(new Pair(diamond3, club3)),
+        new OnePairPokerHand(new Pair(spade11, heart11)),
+        new OnePairPokerHand(new Pair(spade11, diamond11)),
+        new OnePairPokerHand(new Pair(heart11, diamond11)),
+        new TwoPairPokerHand(
+            new Pair(diamond3, club3),
+            new Pair(spade11, heart11)
+        ),
+        new TwoPairPokerHand(
+            new Pair(diamond3, club3),
+            new Pair(spade11, diamond11)
+        ),
+        new TwoPairPokerHand(
+            new Pair(diamond3, club3),
+            new Pair(heart11, diamond11)
+        ),
+        new ThreeCardPokerHand(new Triple(spade11, heart11, diamond11)),
+        new FullHousePokerHand(
+            new Pair(diamond3, club3),
+            new Triple(spade11, heart11, diamond11)
+        ),
+    ];
+};
+
 export {
     Hand,
     IPokerHand,
