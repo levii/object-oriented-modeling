@@ -58,6 +58,29 @@ describe('Rank', () => {
             ).toEqual([ace, king, five, two]);
         });
     });
+
+    describe('isStrongerThan()', () => {
+        const ace = new Rank(1);
+        const two = new Rank(2);
+        const five = new Rank(5);
+        const king = new Rank(13);
+
+        it('ace が強い', () => {
+            expect(ace.isStrongerThan(two)).toBeTruthy();
+            expect(ace.isStrongerThan(five)).toBeTruthy();
+            expect(ace.isStrongerThan(king)).toBeTruthy();
+        });
+
+        it('2, 5, K は ace より強くない', () => {
+            expect(two.isStrongerThan(ace)).toBeFalsy();
+            expect(five.isStrongerThan(ace)).toBeFalsy();
+            expect(king.isStrongerThan(ace)).toBeFalsy();
+        });
+
+        it('同じランクのときは、 false', () => {
+            expect(ace.isStrongerThan(ace)).toBeFalsy();
+        });
+    });
 });
 
 describe('Suit', () => {

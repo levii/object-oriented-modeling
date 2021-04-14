@@ -148,6 +148,15 @@ class Rank {
         return this.toString() === other.toString();
     }
 
+    /**
+     * other よりも強いランクのときに true を返します
+     *
+     * @param other {Rank}
+     */
+    isStrongerThan(other: Rank): boolean {
+        return this.compareByStrength(other) < 0;
+    }
+
     private strength(): number {
         if (this.value == 1) {
             return 14;
@@ -161,6 +170,8 @@ class Rank {
      *  - other のほうが強い時には、正の値を
      *  - other のほうが弱い時には、負の値を
      *  - other と this が同じランクのときには、 0 を返します。
+     *
+     *  sort() の compareFunction に渡すと、配列の先頭が最も強く、末尾が最も弱い順に並び替えます。
      *
      * @param other {Rank}
      */
@@ -481,7 +492,7 @@ class PokerHandCollection {
     }
 
     all(): IPokerHand[] {
-        return Array.from(this.pokerHands)
+        return Array.from(this.pokerHands);
     }
 
     strongestPokerHand(): IPokerHand {
