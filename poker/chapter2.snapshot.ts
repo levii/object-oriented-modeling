@@ -253,6 +253,24 @@ class OnePairPokerHand implements IPokerHand {
     }
 }
 
+class OnePairPokerHand_ implements IPokerHand {
+    private readonly cards: [Card, Card];
+
+    constructor(cardA: Card, cardB: Card) {
+        if (cardA.isSameRank(cardB)) {
+            this.cards = cardA.isStrongerThan(cardB)
+                ? [cardA, cardB]
+                : [cardB, cardA];
+        } else {
+            throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
+        }
+    }
+    toString(): string {
+        const cards = this.cards.map((card) => card.toString());
+        return `OnePair[${cards.join(', ')}]`;
+    }
+}
+
 class TwoPairPokerHand implements IPokerHand {
     private readonly pairs: [Pair, Pair];
 
@@ -289,6 +307,25 @@ class ThreeCardPokerHand implements IPokerHand {
 
     toString(): string {
         return `ThreeCard[${this.triple.toString()}]`;
+    }
+}
+
+class ThreeCardPokerHand_ implements IPokerHand {
+    private readonly cards: [Card, Card, Card];
+
+    constructor(cardA: Card, cardB: Card, cardC: Card) {
+        if (cardA.isSameRank(cardB) && cardA.isSameRank(cardC)) {
+            const [c0, c1, c2] = [cardA, cardB, cardC].sort(
+                Card.compareByStrength
+            );
+            this.cards = [c0, c1, c2];
+        } else {
+            throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
+        }
+    }
+    toString(): string {
+        const cards = this.cards.map((card) => card.toString());
+        return `OnePair[${cards.join(', ')}]`;
     }
 }
 
