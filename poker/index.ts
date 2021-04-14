@@ -303,7 +303,10 @@ class Triple {
 
     constructor(cardA: Card, cardB: Card, cardC: Card) {
         if (cardA.isSameRank(cardB) && cardB.isSameRank(cardC)) {
-            this.cards = [cardA, cardB, cardC];
+            const [c0, c1, c2] = [cardA, cardB, cardC].sort(
+                Card.compareByStrength
+            );
+            this.cards = [c0, c1, c2];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}, ${cardC}`);
         }
