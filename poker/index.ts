@@ -268,10 +268,9 @@ class Pair {
 
     constructor(cardA: Card, cardB: Card) {
         if (cardA.isSameRank(cardB)) {
-            this.cards = [cardA, cardB].sort(Card.compareByStrength) as [
-                Card,
-                Card
-            ];
+            this.cards = cardA.isStrongerThan(cardB)
+                ? [cardA, cardB]
+                : [cardB, cardA];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
         }
