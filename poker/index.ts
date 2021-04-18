@@ -572,10 +572,12 @@ class FullHousePokerHandFactory implements IPokerHandFactory {
         const cardsA = hand.cards.filterByRank(rankA);
         const cardsB = hand.cards.filterByRank(rankB);
 
-        if (cardsA.count() == 2) {
+        if (cardsA.count() == 2 && cardsB.count() == 3) {
             return [this.buildFullHouse(cardsA.all(), cardsB.all())];
-        } else {
+        } else if (cardsA.count() == 3 && cardsB.count() == 2) {
             return [this.buildFullHouse(cardsB.all(), cardsA.all())];
+        } else {
+            return [];
         }
     }
 
