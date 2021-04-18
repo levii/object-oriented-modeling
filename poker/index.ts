@@ -234,6 +234,9 @@ class Suit {
     };
 
     private constructor(value: string) {
+        if (!this.mapping[value]) {
+            throw new Error(`Unknown value of Suit: ${value}`);
+        }
         this.value = value;
     }
 
