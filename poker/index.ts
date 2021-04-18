@@ -27,7 +27,7 @@ class CardCollection {
     private readonly cards: Card[];
 
     constructor(cards: Card[] = []) {
-        this.cards = Array.from(cards);
+        this.cards = Array.from(cards).sort(Card.compareByStrength);
     }
 
     contain(other: Card): boolean {
@@ -35,8 +35,8 @@ class CardCollection {
     }
 
     isEqual(other: CardCollection): boolean {
-        return this.cards.every((card) => {
-            return other.contain(card);
+        return this.cards.every((card, i) => {
+            return card.isEqual(other.cards[i]);
         });
     }
 

@@ -32,7 +32,7 @@ describe('Chapter1: ポーカー', () => {
         ]);
 
         expect(`${hand}`).toEqual(
-            'Hand(CardCollection([♦3], [♣3], [♠J], [♥4], [♦A]))'
+            'Hand(CardCollection([♦A], [♠J], [♥4], [♦3], [♣3]))'
         );
     });
 });
