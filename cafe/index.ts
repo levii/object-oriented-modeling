@@ -174,6 +174,10 @@ class DiscountAmount {
         return new DiscountAmount(this.value + other.value);
     }
 
+    compareTo(other: DiscountAmount): number {
+        return this.value - other.value
+    }
+
     static ZERO = new DiscountAmount(0);
 
     static buildFromPrice(price: Price, rate: number): DiscountAmount {
@@ -241,6 +245,7 @@ class Discount {
 
 interface IDiscount {
     amount(): DiscountAmount;
+    compareAmount(other: IDiscount): number;
 }
 
 interface IDiscountFactory {
@@ -261,6 +266,10 @@ class NutritionBalanceDiscount implements IDiscount {
             this.targetDish.price,
             NutritionBalanceDiscount.DISCOUNT_RATE
         );
+    }
+
+    compareAmount(other: IDiscount): number {
+        return this.amount().compareTo(other.amount())
     }
 }
 
@@ -288,6 +297,9 @@ class NiceCalorieDiscount implements IDiscount {
     amount(): DiscountAmount {
         return new DiscountAmount(50);
     }
+    compareAmount(other: IDiscount): number {
+        return this.amount().compareTo(other.amount())
+    }
 }
 
 class NiceCalorieDiscountFactory implements IDiscountFactory {
@@ -310,6 +322,9 @@ class LowCarbonDiscount implements IDiscount {
     amount(): DiscountAmount {
         return new DiscountAmount(20);
     }
+    compareAmount(other: IDiscount): number {
+        return this.amount().compareTo(other.amount())
+    }
 }
 
 class LowCarbonDiscountFactory implements IDiscountFactory {
@@ -328,11 +343,21 @@ class LowCarbonDiscountFactory implements IDiscountFactory {
     }
 }
 
-class DiscountCollection {
+class AvailableDiscountCollection {
     private readonly discounts: IDiscount[];
 
     constructor(discounts: IDiscount[]) {
         this.discounts = Array.from(discounts);
+    }
+
+    findMaxDiscount(): IDiscount | null {
+        const sorted = this.discounts.sort((a,b) => a.compareAmount(b));
+        return sorted[sorted.length] || null;
+    }
+
+    _findMaxDiscount(): IDiscount | null {
+        const sorted = this.discounts.sort((a,b) => a.amount().value - b.amount().value);
+        return sorted[sorted.length] || null;
     }
 
     all(): IDiscount[] {
@@ -353,7 +378,7 @@ class DiscountCollectionFactory {
         new LowCarbonDiscountFactory(),
     ];
 
-    build(plate: Plate): DiscountCollection {
+    build(plate: Plate): AvailableDiscountCollection {
         const discounts: IDiscount[] = [];
 
         this.factories.forEach((factory) => {
@@ -362,15 +387,15 @@ class DiscountCollectionFactory {
             }
         });
 
-        return new DiscountCollection(discounts);
+        return new AvailableDiscountCollection(discounts);
     }
 }
 
 class Order {
     private readonly dishes: DishCollection;
-    private readonly discounts: DiscountCollection;
+    private readonly discounts: AvailableDiscountCollection;
 
-    constructor(dishes: DishCollection, discounts: DiscountCollection) {
+    constructor(dishes: DishCollection, discounts: AvailableDiscountCollection) {
         this.dishes = dishes;
         this.discounts = discounts;
     }
@@ -396,7 +421,7 @@ export {
     LowCarbonDiscount,
     NiceCalorieDiscount,
     NutritionBalanceDiscount,
-    DiscountCollection,
+    AvailableDiscountCollection,
     DiscountCollectionFactory,
     Order,
 };
