@@ -244,7 +244,7 @@ class Discount {
 }
 
 interface IDiscount {
-    amount(): DiscountAmount;
+    amount(): number;
     compareAmount(other: IDiscount): number;
 }
 
@@ -261,15 +261,15 @@ class NutritionBalanceDiscount implements IDiscount {
         this.targetDish = targetDish;
     }
 
-    amount(): DiscountAmount {
+    amount(): number {
         return DiscountAmount.buildFromPrice(
             this.targetDish.price,
             NutritionBalanceDiscount.DISCOUNT_RATE
-        );
+        ).value
     }
 
     compareAmount(other: IDiscount): number {
-        return this.amount().compareTo(other.amount())
+        return this.amount() - other.amount()
     }
 }
 
@@ -294,11 +294,11 @@ class NutritionBalanceDiscountFactory implements IDiscountFactory {
 }
 
 class NiceCalorieDiscount implements IDiscount {
-    amount(): DiscountAmount {
-        return new DiscountAmount(50);
+    amount(): number {
+        return 50
     }
     compareAmount(other: IDiscount): number {
-        return this.amount().compareTo(other.amount())
+        return this.amount() - other.amount()
     }
 }
 
@@ -319,11 +319,11 @@ class NiceCalorieDiscountFactory implements IDiscountFactory {
 }
 
 class LowCarbonDiscount implements IDiscount {
-    amount(): DiscountAmount {
-        return new DiscountAmount(20);
+    amount(): number {
+        return 20
     }
     compareAmount(other: IDiscount): number {
-        return this.amount().compareTo(other.amount())
+        return this.amount() - other.amount()
     }
 }
 
@@ -366,7 +366,7 @@ class AvailableDiscountCollection {
 
     totalAmount(): DiscountAmount {
         return this.discounts.reduce<DiscountAmount>((amount, discount) => {
-            return amount.add(discount.amount());
+            return amount.add(new DiscountAmount(discount.amount()));
         }, DiscountAmount.ZERO);
     }
 }
