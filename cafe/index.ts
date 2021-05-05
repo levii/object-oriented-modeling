@@ -175,7 +175,7 @@ class DiscountAmount {
     }
 
     compareTo(other: DiscountAmount): number {
-        return this.value - other.value
+        return this.value - other.value;
     }
 
     static ZERO = new DiscountAmount(0);
@@ -265,11 +265,11 @@ class NutritionBalanceDiscount implements IDiscount {
         return DiscountAmount.buildFromPrice(
             this.targetDish.price,
             NutritionBalanceDiscount.DISCOUNT_RATE
-        ).value
+        ).value;
     }
 
     compareAmount(other: IDiscount): number {
-        return this.amount() - other.amount()
+        return this.amount() - other.amount();
     }
 }
 
@@ -295,10 +295,10 @@ class NutritionBalanceDiscountFactory implements IDiscountFactory {
 
 class NiceCalorieDiscount implements IDiscount {
     amount(): number {
-        return 50
+        return 50;
     }
     compareAmount(other: IDiscount): number {
-        return this.amount() - other.amount()
+        return this.amount() - other.amount();
     }
 }
 
@@ -320,10 +320,10 @@ class NiceCalorieDiscountFactory implements IDiscountFactory {
 
 class LowCarbonDiscount implements IDiscount {
     amount(): number {
-        return 20
+        return 20;
     }
     compareAmount(other: IDiscount): number {
-        return this.amount() - other.amount()
+        return this.amount() - other.amount();
     }
 }
 
@@ -343,6 +343,38 @@ class LowCarbonDiscountFactory implements IDiscountFactory {
     }
 }
 
+function calcPaymentAmount(plate: Plate): number {
+    // プレートを下記のような形で作成して、この関数を呼び出す
+    // const pasta = new Dish('パスタ&ランチ', new Price(250), new Nutrition(1, 1, 3));
+    // const plate = new Plate('次郎のプレート', [pasta, bread, dessert]);
+    const totalDishAmount = 550; // plate.totalDishAmount() のように取り出したい
+
+    // プレートの持つ Dish の中から、バランス配慮セット割引の対象料理を選択する
+    // (ここでは疑似的に フルーツの Dish を用意する)
+    const dessert = new Dish(
+        'フルーツ',
+        new Price(150),
+        new Nutrition(0, 1, 0)
+    );
+
+    // plate に対して適用可能な割引オブジェクトの集合を用意して
+    const availableDiscounts: IDiscount[] = [
+        new LowCarbonDiscount(),
+        new NiceCalorieDiscount(),
+        new NutritionBalanceDiscount(dessert),
+    ];
+
+    // それを割引金額順に並び替えて
+    const sortedDiscounts = availableDiscounts.sort(
+        (a, b) => a.amount() - b.amount()
+    );
+    // 一番最後 (=最大の割引額) の要素を取り出す
+    const discount = sortedDiscounts[sortedDiscounts.length];
+
+    // Dishの合計金額から割引金額を差し引く
+    return totalDishAmount - (discount ? discount.amount() : 0);
+}
+
 class AvailableDiscountCollection {
     private readonly discounts: IDiscount[];
 
@@ -351,12 +383,12 @@ class AvailableDiscountCollection {
     }
 
     findMaxDiscount(): IDiscount | null {
-        const sorted = this.discounts.sort((a,b) => a.compareAmount(b));
+        const sorted = this.discounts.sort((a, b) => a.compareAmount(b));
         return sorted[sorted.length] || null;
     }
 
     _findMaxDiscount(): IDiscount | null {
-        const sorted = this.discounts.sort((a,b) => a.amount().value - b.amount().value);
+        const sorted = this.discounts.sort((a, b) => a.amount() - b.amount());
         return sorted[sorted.length] || null;
     }
 
@@ -395,7 +427,10 @@ class Order {
     private readonly dishes: DishCollection;
     private readonly discounts: AvailableDiscountCollection;
 
-    constructor(dishes: DishCollection, discounts: AvailableDiscountCollection) {
+    constructor(
+        dishes: DishCollection,
+        discounts: AvailableDiscountCollection
+    ) {
         this.dishes = dishes;
         this.discounts = discounts;
     }
