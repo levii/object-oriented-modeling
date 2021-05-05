@@ -1,6 +1,6 @@
 import {
     DiscountAmount,
-    DiscountCollectionFactory,
+    AvailableDiscountCollectionFactory,
     Dish,
     DishCollection,
     Nutrition,
@@ -64,7 +64,7 @@ describe('DiscountAmount', function () {
 describe('DiscountCollectionFactory', () => {
     describe('太郎のプレート', () => {
         const plate = new Plate('太郎のプレート', [pasta, bread, dessert]);
-        const discounts = new DiscountCollectionFactory().build(plate);
+        const discounts = new AvailableDiscountCollectionFactory().build(plate);
 
         it('1つの割引が適用されていること', () => {
             expect(discounts.all()).toHaveLength(1);
@@ -81,7 +81,7 @@ describe('DiscountCollectionFactory', () => {
             lowCarbonBread,
             dessert,
         ]);
-        const discounts = new DiscountCollectionFactory().build(plate);
+        const discounts = new AvailableDiscountCollectionFactory().build(plate);
 
         it('3つの割引が適用されていること', () => {
             expect(discounts.all()).toHaveLength(3);
@@ -96,8 +96,13 @@ describe('DiscountCollectionFactory', () => {
 describe('Order', () => {
     describe('太郎のプレート', () => {
         const plate = new Plate('太郎のプレート', [pasta, bread, dessert]);
-        const discounts = new DiscountCollectionFactory().build(plate);
-        const order = new Order(plate.dishCollection(), discounts);
+        const availableDiscounts = new AvailableDiscountCollectionFactory().build(
+            plate
+        );
+        const order = new Order(
+            plate.dishCollection(),
+            availableDiscounts.findMaxDiscount()
+        );
 
         it('小計、割引額、合計額が計算できること', () => {
             expect(order.subtotalAmount()).toEqual(new Price(550));
@@ -112,8 +117,13 @@ describe('Order', () => {
             lowCarbonBread,
             dessert,
         ]);
-        const discounts = new DiscountCollectionFactory().build(plate);
-        const order = new Order(plate.dishCollection(), discounts);
+        const availableDiscounts = new AvailableDiscountCollectionFactory().build(
+            plate
+        );
+        const order = new Order(
+            plate.dishCollection(),
+            availableDiscounts.findMaxDiscount()
+        );
 
         it('小計、割引額、合計額が計算できること', () => {
             expect(order.subtotalAmount()).toEqual(new Price(550));

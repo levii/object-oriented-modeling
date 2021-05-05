@@ -403,7 +403,7 @@ class AvailableDiscountCollection {
     }
 }
 
-class DiscountCollectionFactory {
+class AvailableDiscountCollectionFactory {
     private readonly factories: IDiscountFactory[] = [
         new NutritionBalanceDiscountFactory(),
         new NiceCalorieDiscountFactory(),
@@ -425,26 +425,23 @@ class DiscountCollectionFactory {
 
 class Order {
     private readonly dishes: DishCollection;
-    private readonly discounts: AvailableDiscountCollection;
+    private readonly discount: IDiscount | null;
 
-    constructor(
-        dishes: DishCollection,
-        discounts: AvailableDiscountCollection
-    ) {
+    constructor(dishes: DishCollection, discount: IDiscount | null) {
         this.dishes = dishes;
-        this.discounts = discounts;
+        this.discount = discount;
     }
 
     subtotalAmount(): Price {
         return this.dishes.totalAmount();
     }
 
-    discountAmount(): DiscountAmount {
-        return this.discounts.totalAmount();
+    discountAmount(): number {
+        return this.discount ? this.discount.amount() : 0;
     }
 
     totalAmount(): Price {
-        return this.subtotalAmount().add(this.discountAmount().toPrice());
+        return new Price(this.subtotalAmount().value - this.discountAmount());
     }
 }
 
@@ -457,6 +454,6 @@ export {
     NiceCalorieDiscount,
     NutritionBalanceDiscount,
     AvailableDiscountCollection,
-    DiscountCollectionFactory,
+    AvailableDiscountCollectionFactory,
     Order,
 };
