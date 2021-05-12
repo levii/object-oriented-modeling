@@ -135,6 +135,10 @@ export class DishCollection {
         return Array.from(this.dishes);
     }
 
+    getLowestPriceDish(): Dish {
+        return this.dishes[0];
+    }
+
     first(): Dish | undefined {
         return this.dishes[0];
     }
@@ -340,6 +344,27 @@ class LowCarbonDiscountFactory implements IDiscountFactory {
         }
 
         return new LowCarbonDiscount();
+    }
+}
+
+class Order2 {
+    private readonly plate: Plate;
+    private readonly availableDiscounts: IDiscount[];
+
+    constructor(plate: Plate, availableDiscounts: IDiscount[]) {
+        this.plate = plate;
+        this.availableDiscounts = availableDiscounts;
+    }
+
+    discountAmount(): number {
+        // availableDiscounts の中から条件に適合する最適な割引を選択して返す
+        // それを割引金額順に並び替えて
+        const sortedDiscounts = this.availableDiscounts.sort(
+            (a, b) => a.amount() - b.amount()
+        );
+        // 一番最後 (=最大の割引額) の要素を取り出す
+        const discount = sortedDiscounts[sortedDiscounts.length];
+        return discount ? discount.amount() : 0;
     }
 }
 
