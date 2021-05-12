@@ -368,6 +368,24 @@ class Order2 {
     }
 }
 
+class Order3 {
+    private readonly plate: Plate;
+    private readonly availableDiscounts: AvailableDiscountCollection;
+
+    constructor(plate: Plate, availableDiscounts: AvailableDiscountCollection) {
+        this.plate = plate;
+        this.availableDiscounts = availableDiscounts;
+    }
+
+    appliedDiscount(): IDiscount {
+        return this.availableDiscounts.findMaxDiscount();
+    }
+
+    discountAmount(): number {
+        return this.appliedDiscount().amount();
+    }
+}
+
 function calcPaymentAmount(plate: Plate): number {
     // プレートを下記のような形で作成して、この関数を呼び出す
     // const pasta = new Dish('パスタ&ランチ', new Price(250), new Nutrition(1, 1, 3));
