@@ -154,6 +154,22 @@ class OnePairPokerHand implements IPokerHand {
 
     compareByStrength(other: IPokerHand): number {
         // TODO: this と other で強弱を判定する
+        if (other instanceof OnePairPokerHand) {
+            // 比較相手が（自分と同じ）ワンペアである場合
+            return this.compareWithOnePairHand(other);
+        } else {
+            // 比較相手がワンペア以外の場合
+            return this.compareByPokerHandType(other);
+        }
+    }
+
+    private compareByPokerHandType(other: IPokerHand): number {
+        // 比較相手がワンペア以外の場合
+        return 0;
+    }
+
+    private compareWithOnePairHand(other: OnePairPokerHand): number {
+        // ワンペア同士での強弱を判定する
         return 0;
     }
 }
