@@ -149,6 +149,7 @@ class Triple {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IPokerHand {
+    getName(): string;
     compareByStrength(other: IPokerHand): number;
 }
 
@@ -165,6 +166,10 @@ class OnePairPokerHand implements IPokerHand {
 
     getPair(): Pair {
         return this.pair;
+    }
+
+    getName(): string {
+        return 'OnePair';
     }
 
     compareByStrength(other: IPokerHand): number {
@@ -213,6 +218,10 @@ class OnePairPokerHand_ implements IPokerHand {
         return `OnePair[${cards.join(', ')}]`;
     }
 
+    getName(): string {
+        return 'OnePair';
+    }
+
     compareByStrength(other: IPokerHand): number {
         // TODO: this と other で強弱を判定する
         return 0;
@@ -235,6 +244,10 @@ class TwoPairPokerHand implements IPokerHand {
         return `TwoPair[${pairs.join(', ')}]`;
     }
 
+    getName(): string {
+        return 'TwoPair';
+    }
+
     compareByStrength(other: IPokerHand): number {
         // TODO: this と other で強弱を判定する
         return 0;
@@ -250,6 +263,10 @@ class ThreeCardPokerHand implements IPokerHand {
 
     toString(): string {
         return `ThreeCard[${this.triple.toString()}]`;
+    }
+
+    getName(): string {
+        return 'ThreeCard';
     }
 
     compareByStrength(other: IPokerHand): number {
@@ -274,6 +291,10 @@ class ThreeCardPokerHand_ implements IPokerHand {
         return `OnePair[${cards.join(', ')}]`;
     }
 
+    getName(): string {
+        return 'ThreeCard';
+    }
+
     compareByStrength(other: IPokerHand): number {
         // TODO: this と other で強弱を判定する
         return 0;
@@ -295,6 +316,10 @@ class FullHousePokerHand implements IPokerHand {
 
     toString(): string {
         return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
+    }
+
+    getName(): string {
+        return 'FullHouse';
     }
 
     compareByStrength(other: IPokerHand): number {
@@ -323,6 +348,10 @@ class FullHousePokerHand_ implements IPokerHand {
         const pair = this.pairCards.map((card) => `${card}`).join(', ');
         const triple = this.tripleCards.map((card) => `${card}`).join(', ');
         return `FullHouse[${pair}, ${triple}]`;
+    }
+
+    getName(): string {
+        return 'FullHouse';
     }
 
     compareByStrength(other: IPokerHand): number {
