@@ -27,48 +27,6 @@ class Card {
     toString(): string {
         return `[${this.suit}${this.rank}]`;
     }
-
-    isEqual(other: Card): boolean {
-        return this.suit.isEqual(other.suit) && this.rank.isEqual(other.rank);
-    }
-
-    isSameRank(other: Card): boolean {
-        return this.rank.isEqual(other.rank);
-    }
-
-    /**
-     * other よりも強いカードのときに true を返します
-     *
-     * @param other {Card}
-     */
-    isStrongerThan(other: Card): boolean {
-        return this.compareByStrength(other) < 0;
-    }
-
-    /**
-     * Cardの強い順に並び替える
-     *
-     *  - other のほうが強い時には、正の値を
-     *  - other のほうが弱い時には、負の値を
-     *  - other と this が同じランクのときには、 0 を返します。
-     *
-     *  sort() の compareFunction に渡すと、配列の先頭が最も強く、末尾が最も弱い順に並び替えます。
-     *
-     * @param other {Card}
-     */
-    compareByStrength(other: Card): number {
-        const compareRank = this.rank.compareByStrength(other.rank);
-
-        if (compareRank == 0) {
-            return this.suit.compareByStrength(other.suit);
-        } else {
-            return compareRank;
-        }
-    }
-
-    static compareByStrength(a: Card, b: Card): number {
-        return a.compareByStrength(b);
-    }
 }
 
 class Rank {
@@ -100,38 +58,11 @@ class Rank {
     isEqual(other: Rank): boolean {
         return this.toString() === other.toString();
     }
-
-    private strength(): number {
-        if (this.value == 1) {
-            return 14;
-        }
-        return this.value;
-    }
-
-    /**
-     * Rankの強い順に並び替える
-     *
-     *  - other のほうが強い時には、正の値を
-     *  - other のほうが弱い時には、負の値を
-     *  - other と this が同じランクのときには、 0 を返します。
-     *
-     *  sort() の compareFunction に渡すと、配列の先頭が最も強く、末尾が最も弱い順に並び替えます。
-     *
-     * @param other {Rank}
-     */
-    compareByStrength(other: Rank): number {
-        return other.strength() - this.strength();
-    }
-
-    static compareByStrength(a: Rank, b: Rank): number {
-        return a.compareByStrength(b);
-    }
 }
 
 class Suit {
     private readonly value: string;
 
-    private readonly strengthOrder = ['Spade', 'Heart', 'Diamond', 'Club'];
     private mapping = {
         Spade: '♠',
         Heart: '♥',
@@ -147,34 +78,20 @@ class Suit {
         return this.mapping[this.value];
     }
 
-    isEqual(other: Suit): boolean {
-        return this.toString() === other.toString();
-    }
-
     public static Spade = new Suit('Spade');
     public static Heart = new Suit('Heart');
     public static Diamond = new Suit('Diamond');
     public static Club = new Suit('Club');
-
-    compareByStrength(other: Suit): number {
-        const myOrder = this.strengthOrder.indexOf(this.value);
-        const otherOder = this.strengthOrder.indexOf(other.value);
-        return myOrder - otherOder;
-    }
-
-    static compareByStrength(a: Suit, b: Suit): number {
-        return a.compareByStrength(b);
-    }
 }
 
 class Pair {
     private readonly cards: [Card, Card];
 
     constructor(cardA: Card, cardB: Card) {
-        if (cardA.isSameRank(cardB)) {
-            this.cards = cardA.isStrongerThan(cardB)
-                ? [cardA, cardB]
-                : [cardB, cardA];
+        if (cardA.rank.isEqual(cardB.rank)) {
+            // TODO: 引数の順序が入れ替わっても問題ないように並び替える
+            // 例) 「♧A と ♡A のペア」 と 「♡A と ♧A のペア」 は同じものとして扱いたい
+            this.cards = [cardA, cardB];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
         }
@@ -191,29 +108,15 @@ class Pair {
     toString(): string {
         return `Pair(${this.rank}, ${this.suits.join(', ')})`;
     }
-
-    isSameRank(other: Pair): boolean {
-        return this.rank.isEqual(other.rank);
-    }
-
-    isStrongerThan(other: Pair): boolean {
-        return this.compareByStrength(other) < 0;
-    }
-
-    compareByStrength(other: Pair): number {
-        // TODO: 相手のPairとランクが同じ場合には、スートで比較する
-        return this.rank.compareByStrength(other.rank);
-    }
 }
 
 class Triple {
     private readonly cards: [Card, Card, Card];
 
     constructor(cardA: Card, cardB: Card, cardC: Card) {
-        if (cardA.isSameRank(cardB) && cardB.isSameRank(cardC)) {
-            const [c0, c1, c2] = [cardA, cardB, cardC].sort(
-                Card.compareByStrength
-            );
+        if (cardA.rank.isEqual(cardB.rank) && cardB.rank.isEqual(cardC.rank)) {
+            // TODO: (Pairと同様に) 引数の順序が入れ替わっても問題ないように一定のルールで並び替える
+            const [c0, c1, c2] = [cardA, cardB, cardC];
             this.cards = [c0, c1, c2];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}, ${cardC}`);
@@ -225,16 +128,11 @@ class Triple {
     }
 
     get suits(): Suit[] {
-        return this.cards.map((card) => card.suit).sort(Suit.compareByStrength);
+        return this.cards.map((card) => card.suit);
     }
 
     toString(): string {
         return `Triple(${this.rank}, ${this.suits.join(', ')})`;
-    }
-
-    compareByStrength(other: Triple): number {
-        // TODO: 相手のPairとランクが同じ場合には、スートで比較する
-        return this.rank.compareByStrength(other.rank);
     }
 }
 
@@ -257,10 +155,8 @@ class OnePairPokerHand_ implements IPokerHand {
     private readonly cards: [Card, Card];
 
     constructor(cardA: Card, cardB: Card) {
-        if (cardA.isSameRank(cardB)) {
-            this.cards = cardA.isStrongerThan(cardB)
-                ? [cardA, cardB]
-                : [cardB, cardA];
+        if (cardA.rank.isEqual(cardB.rank)) {
+            this.cards = [cardA, cardB];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
         }
@@ -275,26 +171,16 @@ class TwoPairPokerHand implements IPokerHand {
     private readonly pairs: [Pair, Pair];
 
     constructor(pairA: Pair, pairB: Pair) {
-        if (pairA.isSameRank(pairB)) {
+        if (pairA.rank.isEqual(pairB.rank)) {
             throw new Error(`Invalid pairs: pairA=${pairA}, pairB=${pairB}`);
         }
 
-        this.pairs = pairA.isStrongerThan(pairB)
-            ? [pairA, pairB]
-            : [pairB, pairA];
+        this.pairs = [pairA, pairB];
     }
 
     toString(): string {
         const pairs = this.pairs.map((pair) => pair.toString());
         return `TwoPair[${pairs.join(', ')}]`;
-    }
-
-    strongerPair(): Pair {
-        return this.pairs[0];
-    }
-
-    weakPair(): Pair {
-        return this.pairs[1];
     }
 }
 
@@ -314,10 +200,8 @@ class ThreeCardPokerHand_ implements IPokerHand {
     private readonly cards: [Card, Card, Card];
 
     constructor(cardA: Card, cardB: Card, cardC: Card) {
-        if (cardA.isSameRank(cardB) && cardA.isSameRank(cardC)) {
-            const [c0, c1, c2] = [cardA, cardB, cardC].sort(
-                Card.compareByStrength
-            );
+        if (cardA.rank.isEqual(cardB.rank) && cardA.rank.isEqual(cardC.rank)) {
+            const [c0, c1, c2] = [cardA, cardB, cardC];
             this.cards = [c0, c1, c2];
         } else {
             throw new Error(`Invalid cards: ${cardA}, ${cardB}`);
@@ -344,6 +228,29 @@ class FullHousePokerHand implements IPokerHand {
 
     toString(): string {
         return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
+    }
+}
+
+class FullHousePokerHand_ implements IPokerHand {
+    private readonly pairCards: [Card, Card];
+    private readonly tripleCards: [Card, Card, Card];
+
+    constructor(
+        cardA: Card,
+        cardB: Card,
+        cardX: Card,
+        cardY: Card,
+        cardZ: Card
+    ) {
+        // TODO: カードのランク組み合わせが妥当か確認する
+        this.pairCards = [cardA, cardB];
+        this.tripleCards = [cardX, cardY, cardZ];
+    }
+
+    toString(): string {
+        const pair = this.pairCards.map((card) => `${card}`).join(', ');
+        const triple = this.tripleCards.map((card) => `${card}`).join(', ');
+        return `FullHouse[${pair}, ${triple}]`;
     }
 }
 
