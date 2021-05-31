@@ -153,6 +153,13 @@ interface IPokerHand {
     compareByStrength(other: IPokerHand): number;
 }
 
+const compareByPokerHandType = (a: IPokerHand, b: IPokerHand): number => {
+    const pokerHandTypeRanks = ['OnePair', 'TwoPair', 'ThreeCard'];
+    const myIndex = pokerHandTypeRanks.indexOf(a.getName());
+    const otherIndex = pokerHandTypeRanks.indexOf(b.getName());
+    return myIndex - otherIndex;
+};
+
 class OnePairPokerHand implements IPokerHand {
     private readonly pair: Pair;
 
@@ -185,10 +192,7 @@ class OnePairPokerHand implements IPokerHand {
 
     private compareByPokerHandType(other: IPokerHand): number {
         // 比較相手がワンペア以外の場合
-        const pokerHandTypeRanks = ['OnePair', 'TwoPair', 'ThreeCard'];
-        const myIndex = pokerHandTypeRanks.indexOf(this.getName());
-        const otherIndex = pokerHandTypeRanks.indexOf(other.getName());
-        return myIndex - otherIndex;
+        return compareByPokerHandType(this, other);
     }
 
     private compareWithOnePairHand(other: OnePairPokerHand): number {
