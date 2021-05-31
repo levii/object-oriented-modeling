@@ -185,7 +185,10 @@ class OnePairPokerHand implements IPokerHand {
 
     private compareByPokerHandType(other: IPokerHand): number {
         // 比較相手がワンペア以外の場合
-        return 0;
+        const pokerHandTypeRanks = ['OnePair', 'TwoPair', 'ThreeCard'];
+        const myIndex = pokerHandTypeRanks.indexOf(this.getName());
+        const otherIndex = pokerHandTypeRanks.indexOf(other.getName());
+        return myIndex - otherIndex;
     }
 
     private compareWithOnePairHand(other: OnePairPokerHand): number {
