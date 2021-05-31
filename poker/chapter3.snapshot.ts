@@ -137,7 +137,9 @@ class Triple {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-interface IPokerHand {}
+interface IPokerHand {
+    compareByStrength(other: IPokerHand): number;
+}
 
 class OnePairPokerHand implements IPokerHand {
     private readonly pair: Pair;
@@ -148,6 +150,11 @@ class OnePairPokerHand implements IPokerHand {
 
     toString(): string {
         return `OnePair[${this.pair.toString()}]`;
+    }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
     }
 }
 
@@ -164,6 +171,11 @@ class OnePairPokerHand_ implements IPokerHand {
     toString(): string {
         const cards = this.cards.map((card) => card.toString());
         return `OnePair[${cards.join(', ')}]`;
+    }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
     }
 }
 
@@ -182,6 +194,11 @@ class TwoPairPokerHand implements IPokerHand {
         const pairs = this.pairs.map((pair) => pair.toString());
         return `TwoPair[${pairs.join(', ')}]`;
     }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
+    }
 }
 
 class ThreeCardPokerHand implements IPokerHand {
@@ -193,6 +210,11 @@ class ThreeCardPokerHand implements IPokerHand {
 
     toString(): string {
         return `ThreeCard[${this.triple.toString()}]`;
+    }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
     }
 }
 
@@ -211,6 +233,11 @@ class ThreeCardPokerHand_ implements IPokerHand {
         const cards = this.cards.map((card) => card.toString());
         return `OnePair[${cards.join(', ')}]`;
     }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
+    }
 }
 
 class FullHousePokerHand implements IPokerHand {
@@ -228,6 +255,11 @@ class FullHousePokerHand implements IPokerHand {
 
     toString(): string {
         return `FullHouse[${this.pair.toString()}, ${this.triple.toString()}]`;
+    }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
     }
 }
 
@@ -252,6 +284,11 @@ class FullHousePokerHand_ implements IPokerHand {
         const triple = this.tripleCards.map((card) => `${card}`).join(', ');
         return `FullHouse[${pair}, ${triple}]`;
     }
+
+    compareByStrength(other: IPokerHand): number {
+        // TODO: this と other で強弱を判定する
+        return 0;
+    }
 }
 
 class CandidatePokerHandCollection {
@@ -273,7 +310,7 @@ class CandidatePokerHandCollection {
         return this.pokerHands.sort(function (a, b) {
             // sort関数の引数に対して、 compare function を渡すことで並び替えが行える
             // compare function は数値を返す。代表値は、負の数(-1), ゼロ(0), 正の数(1) の３値。
-            return 0;
+            return a.compareByStrength(b);
         });
     }
 }
