@@ -254,6 +254,30 @@ class FullHousePokerHand_ implements IPokerHand {
     }
 }
 
+class CandidatePokerHandCollection {
+    private readonly pokerHands: IPokerHand[];
+
+    constructor(pokerHands: IPokerHand[]) {
+        this.pokerHands = pokerHands;
+    }
+
+    strongestPokerHand(): IPokerHand {
+        // pokerHand (役) を強さ順に並び替えて
+        const pokerHands = this.sortByStrength();
+        // その一番最後の要素 (=一番強い役) を返す
+        return pokerHands[pokerHands.length - 1];
+    }
+
+    private sortByStrength(): IPokerHand[] {
+        // pokerHand の配列を強さ順で並び替える
+        return this.pokerHands.sort(function (a, b) {
+            // sort関数の引数に対して、 compare function を渡すことで並び替えが行える
+            // compare function は数値を返す。代表値は、負の数(-1), ゼロ(0), 正の数(1) の３値。
+            return 0;
+        });
+    }
+}
+
 const chapter3jiro = () => {
     const diamond3 = new Card(Suit.Diamond, new Rank(3));
     const club3 = new Card(Suit.Club, new Rank(3));
@@ -263,7 +287,7 @@ const chapter3jiro = () => {
 
     const hand = new Hand([diamond3, club3, spade11, heart11, diamond11]);
 
-    const candidatePokerHands = [
+    const candidatePokerHands = new CandidatePokerHandCollection([
         new OnePairPokerHand(new Pair(diamond3, club3)),
         new OnePairPokerHand(new Pair(spade11, heart11)),
         new OnePairPokerHand(new Pair(spade11, diamond11)),
@@ -285,7 +309,12 @@ const chapter3jiro = () => {
             new Pair(diamond3, club3),
             new Triple(spade11, heart11, diamond11)
         ),
-    ];
+    ]);
+
+    console.log(
+        '次郎の手札から構成可能な役のうち、一番強い役は、',
+        candidatePokerHands.strongestPokerHand()
+    );
 };
 
 export {
