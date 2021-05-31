@@ -58,6 +58,13 @@ class Rank {
     isEqual(other: Rank): boolean {
         return this.toString() === other.toString();
     }
+
+    getStrengthValue(): number {
+        if (this.value === 1) {
+            return 14; // A=1 は K=13 よりも強い
+        }
+        return this.value;
+    }
 }
 
 class Suit {
@@ -181,7 +188,7 @@ class OnePairPokerHand implements IPokerHand {
             return 0;
         } else {
             // 自分と相手の持つペアのランクの大小で強さを決める
-            return 0;
+            return myRank.getStrengthValue() - otherRank.getStrengthValue();
         }
     }
 }
