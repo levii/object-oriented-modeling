@@ -147,20 +147,37 @@ class Triple {
     }
 }
 
+class PokerHandType {
+    private readonly name: string;
+
+    private constructor(name: string) {
+        this.name = name;
+    }
+
+    getName(): string {
+        return this.name;
+    }
+
+    private static readonly ranks = ['OnePair', 'TwoPair', 'ThreeCard'];
+    public static OnePair = new PokerHandType('OnePair');
+    public static TwoPair = new PokerHandType('TwoPair');
+    public static ThreeCard = new PokerHandType('ThreeCard');
+
+    static compareByPokerHandType(a: IPokerHand, b: IPokerHand): number {
+        const myIndex = this.ranks.indexOf(a.getName());
+        const otherIndex = this.ranks.indexOf(b.getName());
+        return myIndex - otherIndex;
+    }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface IPokerHand {
     getName(): string;
     compareByStrength(other: IPokerHand): number;
 }
 
-const compareByPokerHandType = (a: IPokerHand, b: IPokerHand): number => {
-    const pokerHandTypeRanks = ['OnePair', 'TwoPair', 'ThreeCard'];
-    const myIndex = pokerHandTypeRanks.indexOf(a.getName());
-    const otherIndex = pokerHandTypeRanks.indexOf(b.getName());
-    return myIndex - otherIndex;
-};
-
 class OnePairPokerHand implements IPokerHand {
+    private readonly type: PokerHandType = PokerHandType.OnePair;
     private readonly pair: Pair;
 
     constructor(pair: Pair) {
@@ -176,7 +193,7 @@ class OnePairPokerHand implements IPokerHand {
     }
 
     getName(): string {
-        return 'OnePair';
+        return this.type.getName();
     }
 
     compareByStrength(other: IPokerHand): number {
@@ -192,7 +209,7 @@ class OnePairPokerHand implements IPokerHand {
 
     private compareByPokerHandType(other: IPokerHand): number {
         // 比較相手がワンペア以外の場合
-        return compareByPokerHandType(this, other);
+        return PokerHandType.compareByPokerHandType(this, other);
     }
 
     private compareWithOnePairHand(other: OnePairPokerHand): number {
