@@ -65,6 +65,10 @@ class Rank {
         }
         return this.value;
     }
+
+    compareByStrength(other: Rank): number {
+        return this.getStrengthValue() - other.getStrengthValue();
+    }
 }
 
 class Suit {
@@ -188,7 +192,8 @@ class OnePairPokerHand implements IPokerHand {
             return 0;
         } else {
             // 自分と相手の持つペアのランクの大小で強さを決める
-            return myRank.getStrengthValue() - otherRank.getStrengthValue();
+            // return myRank.getStrengthValue() - otherRank.getStrengthValue();
+            return myRank.compareByStrength(otherRank);
         }
     }
 }
