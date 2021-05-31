@@ -152,6 +152,10 @@ class OnePairPokerHand implements IPokerHand {
         return `OnePair[${this.pair.toString()}]`;
     }
 
+    getPair(): Pair {
+        return this.pair;
+    }
+
     compareByStrength(other: IPokerHand): number {
         // TODO: this と other で強弱を判定する
         if (other instanceof OnePairPokerHand) {
@@ -170,7 +174,15 @@ class OnePairPokerHand implements IPokerHand {
 
     private compareWithOnePairHand(other: OnePairPokerHand): number {
         // ワンペア同士での強弱を判定する
-        return 0;
+        const myRank = this.getPair().rank;
+        const otherRank = other.getPair().rank;
+        if (myRank.isEqual(otherRank)) {
+            // 自分と相手の持つペアのランクが同じならば、スートの強さで比較する
+            return 0;
+        } else {
+            // 自分と相手の持つペアのランクの大小で強さを決める
+            return 0;
+        }
     }
 }
 
