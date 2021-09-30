@@ -113,7 +113,7 @@ class TwoPair implements IPokerHand {
     }
 }
 
-class OnePairFactory {
+class OnePairCollectionFactory {
     static build(hand: Hand): OnePair[] {
         const onePairs: OnePair[] = [];
 
@@ -128,14 +128,23 @@ class OnePairFactory {
     }
 }
 
-class TwoPairFactory {
+class TwoPairCollectionFactory {
     static build(hand: Hand): TwoPair[] {
         const twoPairs: TwoPair[] = [];
 
         hand.combinationForEach(4, (cards) => {
             // TODO: 4枚のカードのうち、同じランクのものが2枚・2組になっているかチェックして..
+            // NOTE: 複雑になりそうなので別メソッドに処理を移譲しても良さそう
+            const twoPair = this.buildOne(cards);
+            if (twoPair) {
+                twoPairs.push(twoPair);
+            }
         });
 
         return twoPairs;
+    }
+
+    private static buildOne(cards: Card[]): TwoPair | null {
+        return null; // 条件を満たしたときには TwoPair を返す /
     }
 }
