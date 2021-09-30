@@ -148,3 +148,28 @@ class TwoPairCollectionFactory {
         return null; // 条件を満たしたときには TwoPair を返す /
     }
 }
+
+class PokerHandCollection {
+    constructor(private readonly pokerHands: IPokerHand[]) {}
+
+    strongest(): IPokerHand | undefined {
+        // sort() は配列を破壊的に変更するので concat() で複製する
+        const pokerHands = this.pokerHands.concat();
+        return pokerHands.sort(PokerHandCollection.compareByStrength).pop();
+    }
+
+    private static compareByStrength(a: IPokerHand, b: IPokerHand): number {
+        return a.compareByStrength(b);
+    }
+}
+
+class CandidatePokerHandCollectionFactory {
+    static build(hand: Hand): PokerHandCollection {
+        const pokerHands: IPokerHand[] = [];
+
+        pokerHands.push(...OnePairCollectionFactory.build(hand));
+        pokerHands.push(...TwoPairCollectionFactory.build(hand));
+
+        return new PokerHandCollection(pokerHands);
+    }
+}
