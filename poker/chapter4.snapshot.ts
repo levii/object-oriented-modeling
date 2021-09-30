@@ -15,6 +15,22 @@ class Hand {
     constructor(cards: Card[]) {
         this.cards = cards;
     }
+
+    /**
+     * Handの持つカードのうち引数に指定された枚数を組み合わせたセットを順に返す
+     *
+     * 手札 [A, B, C, D, E] があったとき、 numberOfCard = 2 を指定すると、以下の10要素が返される
+     * [A, B], [A, C], [A, D], [A, E], [B, C], [B, D], [B, E], [C, D], [C, E], [D, E]
+     *
+     * @param numberOfCard
+     * @param callback
+     */
+    combinationForEach(
+        numberOfCard: number,
+        callback: (cards: Card[], index: number) => void
+    ): void {
+        // TODO
+    }
 }
 
 enum PokerHandName {
@@ -94,5 +110,32 @@ class TwoPair implements IPokerHand {
         //  ツーペアの場合には、強い方のペア同士のランクで比較して、それが同じ場合には弱い方のペア同士で比較する流れになる。
         //  NOTE: 弱い方のペア同士のランクが同じ場合にどちらが強いと判断するかは要確認。
         return 0;
+    }
+}
+
+class OnePairFactory {
+    static build(hand: Hand): OnePair[] {
+        const onePairs: OnePair[] = [];
+
+        // TODO: 手札のカード5枚の中から、同じランクのカード2枚のペアを全て列挙する
+        hand.combinationForEach(2, (cards) => {
+            // TODO: ここで cards の 2枚が同じランクかチェックして..
+            const [a, b] = cards;
+            onePairs.push(new OnePair([a, b]));
+        });
+
+        return onePairs;
+    }
+}
+
+class TwoPairFactory {
+    static build(hand: Hand): TwoPair[] {
+        const twoPairs: TwoPair[] = [];
+
+        hand.combinationForEach(4, (cards) => {
+            // TODO: 4枚のカードのうち、同じランクのものが2枚・2組になっているかチェックして..
+        });
+
+        return twoPairs;
     }
 }
