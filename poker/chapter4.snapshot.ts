@@ -23,6 +23,22 @@ enum PokerHandName {
     FullHouse = 'FullHouse',
 }
 
+class PokerHandStrength {
+    private static readonly strength = [
+        PokerHandName.OnePair,
+        PokerHandName.TwoPair,
+        PokerHandName.FullHouse,
+    ];
+
+    static get(pokerHandName: PokerHandName): number {
+        return this.strength.indexOf(pokerHandName);
+    }
+
+    static compare(a: PokerHandName, b: PokerHandName): number {
+        return this.get(a) - this.get(b);
+    }
+}
+
 interface IPokerHand {
     getName(): PokerHandName;
     compareByStrength(other: IPokerHand): number;
@@ -41,7 +57,8 @@ class OnePair implements IPokerHand {
         if (other instanceof OnePair) {
             return this.compareWithOnePair(other);
         } else {
-            return 0; // TODO
+            // 比較相手が OnePair と異なる種類なので、ポーカーハンドの種類間の強弱比較をすれば良い
+            return PokerHandStrength.compare(this.getName(), other.getName());
         }
     }
 
@@ -67,7 +84,8 @@ class TwoPair implements IPokerHand {
         if (other instanceof TwoPair) {
             return this.compareWithTwoPair(other);
         } else {
-            return 0; // TODO
+            // 比較相手が TwoPair と異なる種類なので、ポーカーハンドの種類間の強弱比較をすれば良い
+            return PokerHandStrength.compare(this.getName(), other.getName());
         }
     }
 
