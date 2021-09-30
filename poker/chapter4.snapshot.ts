@@ -113,8 +113,12 @@ class TwoPair implements IPokerHand {
     }
 }
 
-class OnePairCollectionFactory {
-    static build(hand: Hand): OnePair[] {
+interface IPokerHandCollectionFactory {
+    build(hand: Hand): IPokerHand[];
+}
+
+class OnePairCollectionFactory implements IPokerHandCollectionFactory {
+    build(hand: Hand): OnePair[] {
         const onePairs: OnePair[] = [];
 
         // TODO: 手札のカード5枚の中から、同じランクのカード2枚のペアを全て列挙する
@@ -128,8 +132,8 @@ class OnePairCollectionFactory {
     }
 }
 
-class TwoPairCollectionFactory {
-    static build(hand: Hand): TwoPair[] {
+class TwoPairCollectionFactory implements IPokerHandCollectionFactory {
+    build(hand: Hand): TwoPair[] {
         const twoPairs: TwoPair[] = [];
 
         hand.combinationForEach(4, (cards) => {
@@ -144,7 +148,7 @@ class TwoPairCollectionFactory {
         return twoPairs;
     }
 
-    private static buildOne(cards: Card[]): TwoPair | null {
+    private buildOne(cards: Card[]): TwoPair | null {
         return null; // 条件を満たしたときには TwoPair を返す /
     }
 }
@@ -164,11 +168,17 @@ class PokerHandCollection {
 }
 
 class CandidatePokerHandCollectionFactory {
+    private static factories: IPokerHandCollectionFactory[] = [
+        new OnePairCollectionFactory(),
+        new TwoPairCollectionFactory(),
+    ];
+
     static build(hand: Hand): PokerHandCollection {
         const pokerHands: IPokerHand[] = [];
 
-        pokerHands.push(...OnePairCollectionFactory.build(hand));
-        pokerHands.push(...TwoPairCollectionFactory.build(hand));
+        this.factories.forEach((factory) => {
+            pokerHands.push(...factory.build(hand));
+        });
 
         return new PokerHandCollection(pokerHands);
     }
