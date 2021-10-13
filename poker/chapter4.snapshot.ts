@@ -16,6 +16,17 @@ class Hand {
         this.cards = cards;
     }
 
+    compareByStrength(other: Hand): number {
+        const myPokerHand = CandidatePokerHandCollectionFactory.build(
+            this
+        ).strongest();
+        const otherPokerHand = CandidatePokerHandCollectionFactory.build(
+            other
+        ).strongest();
+
+        return myPokerHand.compareByStrength(otherPokerHand);
+    }
+
     /**
      * Handの持つカードのうち引数に指定された枚数を組み合わせたセットを順に返す
      *
