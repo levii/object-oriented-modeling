@@ -16,13 +16,13 @@ class Hand {
         this.cards = cards;
     }
 
+    pokerHand(): IPokerHand {
+        return CandidatePokerHandCollectionFactory.build(this).strongest();
+    }
+
     compareByStrength(other: Hand): number {
-        const myPokerHand = CandidatePokerHandCollectionFactory.build(
-            this
-        ).strongest();
-        const otherPokerHand = CandidatePokerHandCollectionFactory.build(
-            other
-        ).strongest();
+        const myPokerHand = this.pokerHand();
+        const otherPokerHand = other.pokerHand();
 
         return myPokerHand.compareByStrength(otherPokerHand);
     }
